@@ -19,6 +19,19 @@ For a more thorough introduction about IOTA, please refer to ….
     - **[Errors](#errors)**
     - **[Fields](#fields)**
 - **[API Commands](#api-commands)**
+    - **[`getNodeInfo`](#getNodeInfo)**
+    - **[`getNeighborsActivity`](#getNeighborsActivity)**
+    - **[`getTips`](#getTips)**
+    - **[`getTransfers`](#getTransfers)**
+    - **[`findTransactions`](#findTransactions)**
+    - **[`getBundle`](#getBundle)**
+    - **[`getTransactions`](#getTransactions)**
+    - **[`analyzeTransactions`](#analyzeTransactions)**
+    - **[`transfer`](#transfer)**
+    - **[`replayTransfer`](#replayTransfer)**
+    - **[`generateNewAddress`](#generateNewAddress)**
+    - **[`broadcastTransactions`](#broadcastTransactions)**
+    - **[`broadcastAllTransactions`](#broadcastAllTransactions)**
 
 ***
 
