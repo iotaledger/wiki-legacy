@@ -68,9 +68,9 @@ Because IOTA introduces some rather new concepts to the Blockchain-space, we wil
 
 The IOTA Java client makes it possible to interact with your local node and request certain information or actions to be taken. Once your node is successfully setup, you can interface with it through port `14265` by passing along a JSON object which contains a specified command; and upon successful execution of the command, returns your requested information.
 
-For your convenience, we have added concrete examples on how to use the API in Curl, Python and NodeJS. If you are using Javascript, you can simply follow along by using either XMLHttpRequest or jQuery. For NodeJS, please install the wonderful [https://github.com/request/request](request package), as all our examples require the request package. You can find an example on how to do it with the [/examples/getNodeInfo/script_http.js](HTTP package here).
+For your convenience, we have added concrete examples on how to use the API in Curl, Python and NodeJS. If you are using Javascript, you can simply follow along by using either XMLHttpRequest or jQuery. For NodeJS, please install the wonderful [request npm package](https://github.com/request/request), as all our examples require the request package. You can find an example on how to do it with the [HTTP package here](/examples/getNodeInfo/script_http.js).
 
-**All Code examples can be found here: [https://github.com/iotaledger/documentation/examples](Code Examples)**
+**All Code examples can be found here: [Code Examples](https://github.com/iotaledger/documentation/examples)**
 
 For the rest of this documentation it is assumed that you have the IOTA client running at port `14265` (or a port of your choice, change your requests accordingly then).
 
