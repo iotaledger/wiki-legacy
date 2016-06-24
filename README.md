@@ -70,7 +70,7 @@ The IOTA Java client makes it possible to interact with your local node and requ
 
 For your convenience, we have added concrete examples on how to use the API in Curl, Python and NodeJS. If you are using Javascript, you can simply follow along by using either XMLHttpRequest or jQuery. For NodeJS, please install the wonderful [request npm package](https://github.com/request/request), as all our examples require the request package. You can find an example on how to do it with the [HTTP package here](/examples/getNodeInfo/script_http.js).
 
-**All Code examples can be found here: [Code Examples](https://github.com/iotaledger/documentation/examples)**
+**All Code examples can be found here: [Code Examples](/examples/)**
 
 For the rest of this documentation it is assumed that you have the IOTA client running at port `14265` (or a port of your choice, change your requests accordingly then).
 
@@ -118,13 +118,21 @@ value: string the quantity of IOTA’s which should be transferred.
 
 Returns information about your node.
 
+#### Code examples
+
+Please go to [this subdirectory](/examples/getNodeInfo/) for code examples.
+
 ### `getNeighborsActivity`
 
 Returns the latest activity of your neighbors.
 
+Please go to [this subdirectory](/examples/getNeighborsActivity/) for code examples.
+
 ### `getTips`
 
 Returns the current list of visible tips (unconfirmed transactions).
+
+Please go to [this subdirectory](/examples/getTips/) for code examples.
 
 ### `getTransfers`
 

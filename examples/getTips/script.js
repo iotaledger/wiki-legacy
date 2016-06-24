@@ -1,7 +1,7 @@
 var request = require('request');
 
 var command = {
-    'command': 'getNodeInfo'
+    'command': 'getTips'
 }
 
 var options = {
