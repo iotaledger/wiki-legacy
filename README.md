@@ -19,19 +19,19 @@ For a more thorough introduction about IOTA, please refer to ….
     - **[Errors](#errors)**
     - **[Fields](#fields)**
 - **[API Commands](#api-commands)**
-    - **[`getNodeInfo`](#getNodeInfo)**
-    - **[`getNeighborsActivity`](#getNeighborsActivity)**
-    - **[`getTips`](#getTips)**
-    - **[`getTransfers`](#getTransfers)**
-    - **[`findTransactions`](#findTransactions)**
-    - **[`getBundle`](#getBundle)**
-    - **[`getTransactions`](#getTransactions)**
-    - **[`analyzeTransactions`](#analyzeTransactions)**
+    - **[`getNodeInfo`](#getnodeinfo)**
+    - **[`getNeighborsActivity`](#getneighborsactivity)**
+    - **[`getTips`](#gettips)**
+    - **[`getTransfers`](#gettransfers)**
+    - **[`findTransactions`](#findtransactions)**
+    - **[`getBundle`](#getbundle)**
+    - **[`getTransactions`](#gettransactions)**
+    - **[`analyzeTransactions`](#analyzetransactions)**
     - **[`transfer`](#transfer)**
-    - **[`replayTransfer`](#replayTransfer)**
-    - **[`generateNewAddress`](#generateNewAddress)**
-    - **[`broadcastTransactions`](#broadcastTransactions)**
-    - **[`broadcastAllTransactions`](#broadcastAllTransactions)**
+    - **[`replayTransfer`](#replaytransfer)**
+    - **[`generateNewAddress`](#generatenewaddress)**
+    - **[`broadcastTransactions`](#broadcasttransactions)**
+    - **[`broadcastAllTransactions`](#broadcastalltransactions)**
 
 ***
 
@@ -68,7 +68,9 @@ Because IOTA introduces some rather new concepts to the Blockchain-space, we wil
 
 The IOTA Java client makes it possible to interact with your local node and request certain information or actions to be taken. Once your node is successfully setup, you can interface with it through port `14265` by passing along a JSON object which contains a specified command; and upon successful execution of the command, returns your requested information.
 
-For your convenience, we have added concrete examples on how to use the API in Curl, Python and NodeJS. If you are using Javascript, you can simply follow along by using either XMLHttpRequest or jQuery.
+For your convenience, we have added concrete examples on how to use the API in Curl, Python and NodeJS. If you are using Javascript, you can simply follow along by using either XMLHttpRequest or jQuery. For NodeJS, please install the wonderful [https://github.com/request/request](request package), as all our examples require the request package. You can find an example on how to do it with the [/examples/getNodeInfo/script_http.js](HTTP package here).
+
+**All Code examples can be found here: [https://github.com/iotaledger/documentation/examples](Code Examples)**
 
 For the rest of this documentation it is assumed that you have the IOTA client running at port `14265` (or a port of your choice, change your requests accordingly then).
 
@@ -76,11 +78,11 @@ For the rest of this documentation it is assumed that you have the IOTA client r
 
 ### Making Requests
 
-All API calls need to be sent to `http://localhost:14265` (if you are using the standard port) via a POST HTTP request. The data which will be sent is a **stringified JSON object** which follows the same standard schema of:
+All API calls need to be sent to `http://localhost:14265` (if you are using the standard port) via a POST HTTP request. The data which will be sent is a **JSON object** which follows the same standard schema of:
 
     {‘command’:’YOURCOMMANDHERE’}
 
-Additional parameters are simply added as additional key-value pairs. If the command is successfully executed, your requested information is returned.  It is important to note that all API responses are stringified, you therefore need to use JSON.parse or equivalent to turn it into a JSON object.
+Additional parameters are simply added as additional key-value pairs. If the command is successfully executed, your requested information is returned as either an object or a stringified object (use json.parse or equivalent to turn it into an object).
 
 ### CORS
 
@@ -144,12 +146,14 @@ Parameters | Type | Required | Description
 `digests` | list | Optional | List of message digests.
 `approvees` | list | Optional | List of approvee transaction hashes.
 
-Returns
+#### Returns
 
-bundles : returns the list of transactions which contain the specified bundle hash.
-addresses: returns the list of transactions which have the specified address as an input/output field.
-digests: returns the list of transactions which contain the specified digest value.
-approvees: returns the list of transaction which reference (i.e. confirm) the specified transaction.
+The return value depends on your input. For each specified input value, the command will return the following:
+
+- **`bundles`**: returns the list of transactions which contain the specified bundle hash.
+- **`addresses`**: returns the list of transactions which have the specified address as an input/output field.
+- **`digests`**: returns the list of transactions which contain the specified digest value.
+- **`approvees`**: returns the list of transaction which reference (i.e. confirm) the specified transaction.
 
 ### `getBundle`
 
@@ -161,8 +165,9 @@ Parameters | Type | Required | Description
 `transaction` | string | Yes |Hash of a transaction.
 
 
-Returns
-List of transactions
+#### Returns
+
+- **`transactions`**
 
 
 ### `getTransactions`
@@ -173,8 +178,9 @@ Parameters | Type | Required | Description
 ------------ | ------------- | ------------- | -------------
 `hashes` | list | Yes |List of transaction hashes of which you want to get the raw data from.
 
-Returns
-trytes
+#### Returns
+
+- **`trytes`**
 
 ### `analyzeTransactions`
 
@@ -198,9 +204,9 @@ Parameters | Type | Required | Description
 `minWeightMagnitude` | integer | Yes | Weight of PoW. Default value is 13.
 
 
-Returns
+#### Returns
 
-tail: Transaction hash of the transaction with index 0 in the bundle.
+- **`tail`**: Transaction hash of the transaction with index 0 in the bundle.
 
 ### `replayTransfer`
 
@@ -209,10 +215,6 @@ Replay a previous transfer. Reason for doing this is either because your neighbo
 Parameters | Type | Required | Description
 ------------ | ------------- | ------------- | -------------
 `transaction` | string | Yes | Hash of the transaction which you want to replay.
-
-
-Error Message: “The transfer is not replayable now”
-Returns
 
 ### `generateNewAddress`
 
@@ -224,8 +226,9 @@ Parameters | Type | Required | Description
 `securityLevel` | integer | Yes | Security level of the address you want to generate. Can take values 0, 1, or 2
 `minWeightMagnitude` | integer | Yes | Weight of Proof of Work. Can only take value 13
 
-Returns
-address
+#### Returns
+
+- **`address`**
 
 ### `broadcastTransactions`
 
@@ -238,5 +241,3 @@ Parameters | Type | Required | Description
 ### `broadcastAllTransactions`
 
 Broadcasts all transactions which are stored in the local node’s storage.
-
-Returns the number of transactions which were broadcast.
