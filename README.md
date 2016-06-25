@@ -37,11 +37,9 @@ For a more thorough introduction about IOTA, please refer to ….
 
 ## Installation
 
-To-Do
+For an easy to follow tutorial, please go to [http://necropaz.github.io/IOTAtutorial.html](http://necropaz.github.io/IOTAtutorial.html) More tutorials coming soon.
 
-
-Glossary
-=================
+## Glossary
 
 Because IOTA introduces some rather new concepts to the Blockchain-space, we will list a couple of terms which are important to understand in order to fully grasp IOTA.
 
@@ -116,23 +114,15 @@ value: string the quantity of IOTA’s which should be transferred.
 
 ### `getNodeInfo`
 
-Returns information about your node.
-
-#### Code examples
-
-Please go to [this subdirectory](/examples/getNodeInfo/) for code examples.
+Returns information about your node. Please go to [this subdirectory](/examples/getNodeInfo/) for code examples.
 
 ### `getNeighborsActivity`
 
-Returns the latest activity of your neighbors.
-
-Please go to [this subdirectory](/examples/getNeighborsActivity/) for code examples.
+Returns the latest activity of your neighbors. Please go to [this subdirectory](/examples/getNeighborsActivity/) for code examples.
 
 ### `getTips`
 
-Returns the current list of visible tips (unconfirmed transactions).
-
-Please go to [this subdirectory](/examples/getTips/) for code examples.
+Returns the current list of visible tips (unconfirmed transactions). Please go to [this subdirectory](/examples/getTips/) for code examples.
 
 ### `getTransfers`
 
