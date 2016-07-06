@@ -1,4 +1,6 @@
-This is the temporary home of the documentation for the Java client. We will move to either Readme.io or Readthedocs soon.
+## FOR OUR DEDICATED DOCUMENTATION WEBSITE, PLEASE GO TO: [https://iota.readme.io/v1.0/docs](https://iota.readme.io/v1.0/docs)
+
+*** 
 
 # What is IOTA?
 
