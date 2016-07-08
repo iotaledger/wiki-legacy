@@ -1,6 +1,6 @@
 ## FOR OUR DEDICATED DOCUMENTATION WEBSITE, PLEASE GO TO: [https://iota.readme.io/v1.0/docs](https://iota.readme.io/v1.0/docs)
 
-*** 
+***
 
 # What is IOTA?
 
@@ -61,7 +61,7 @@ Because IOTA introduces some rather new concepts to the Blockchain-space, we wil
 ### IOTA Specific Terms
 
 * **`Tangle`**: A directed acyclic graph (DAG) as a distributed ledger which stores all transaction data of the IOTA network. It is a Blockchain without the blocks and the chain (so is it really a Blockchain?). The Tangle is the first distributed ledger to achieve **scalability**, **no fee transactions** as well as **quantum proof security**. Contrary to today’s Blockchains, consensus is no-longer decoupled but instead an intrinsic part of the system, leading to a decentralized and self-regulating peer-to-peer network.
-* **`Seed`**: 81-char string consisting only of latin letters and 9's which is used to access an account. A seed is like a private key/password. Keep it secure and don't share it with anyone. If someone has access to your seed they can access your account.
+* **`Seed`**: 81-char string consisting only of uppercase latin letters and 9's which is used to access an account. A seed is like a private key/password. Keep it secure and don't share it with anyone. If someone has access to your seed they can access your account.
 * **`Tips`**: Unconfirmed transactions which have no other transactions referencing them.
 * **`Confirm/Validate`**: In order to broadcast a new transaction in IOTA, you must first validate two previous transactions. This validations happens through cross-checking for conflicting transactions as well as the completion of a Proof of Work puzzle.
 * **`Branch/Trunk Transactions`**: Two transactions which were referenced by another transaction.
@@ -91,7 +91,7 @@ Additional parameters are simply added as additional key-value pairs. If the com
 
 ### CORS
 
-CORS is disabled by default, this means that the only way to interface with a remote host is by setting up a gateway using nginx/Apache.
+CORS is enabled by default.
 
 TO BE ADDED
 
@@ -103,7 +103,7 @@ TO BE ADDED
 
 Here we list and describe all additional parameters which are required to be passed along for certain commands.
 
-- **`seed`**: `string` 81-char encoded string which contains the accounts seed. The seed must be correctly encoded: only uppercase characters from the English Alphabet and 9’s. No other characters are allowed.  
+- **`seed`**: `string` 81-char encoded string which contains the accounts seed. The seed must be correctly encoded: only uppercase latin letters and 9’s. No other characters are allowed.  
 - **`address`**: `string` 81-char long address of the recipient of a transaction.
 value: string the quantity of IOTA’s which should be transferred.
 - **`message`**: `string` tryte-encoded string which can contain arbitrary information and is sent alongside a transaction. The message value is publicly visible. The max value is 2187 trytes (or roughly 3028 bytes).
@@ -242,7 +242,7 @@ Please go to [this subdirectory](/examples/getTips/) for code examples.
 
 ### `getTransfers`
 
-Get a list of transfers from a certain account (seed).
+Get the list of transfers from a specified seed (account). The securityLevel determines from which account you want to get the list of transfers, a different securityLevel brings up a different account. This API call does not return messages which were sent to this account. Use `findTransactions` for that.
 
 Parameters | Type | Required | Description
 ------------ | ------------- | ------------- | -------------
