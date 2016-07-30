@@ -1,13 +1,9 @@
 var request = require('request');
 
 var command = {
-    'command': 'getNeighborsActivity'
+  'command': 'getTransactionsToApprove',
+  'milestone': 'SMYMAKKPSUKCKDRUEYCGZJTYCZ9HHDMDUWBAPXARGURPQRHTAJDASRWMIDTPTBNDKDEFBUTBGGAFX9999'
 }
-
-var headers = {
-    'Content-Type': 'application/json',
-    'Content-Length': JSON.stringify(command).length
-};
 
 var options = {
   url: 'http://localhost:14265',
@@ -19,7 +15,7 @@ var options = {
   json: command
 };
 
-request(options, function (error, response, data) {
+request.post('http://localhost:14265',JSON.stringify(command), function (error, response, data) {
   if (!error && response.statusCode == 200) {
     console.log(data);
   }

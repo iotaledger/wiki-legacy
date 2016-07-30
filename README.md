@@ -29,6 +29,7 @@ For a more thorough introduction about IOTA, please refer to ….
 - **[API Commands](#api-commands)**
     - **[`getNodeInfo`](#getnodeinfo)**
     - **[`getNeighborsActivity`](#getneighborsactivity)**
+    - **[`resetNeighborsActivityCounters`](#resetNeighborsActivityCounters)**
     - **[`getTips`](#gettips)**
     - **[`getTransfers`](#gettransfers)**
     - **[`findTransactions`](#findtransactions)**
@@ -125,8 +126,6 @@ Returns information about your node.
 
 **NodeJS request example**
 
-Please go to [this subdirectory](/examples/getNodeInfo/) for code examples.
-
 ```javascript
 var request = require('request');
 
@@ -138,7 +137,8 @@ var options = {
   url: 'http://localhost:14265',
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
   },
   json: command
 };
@@ -153,18 +153,33 @@ request(options, function (error, response, data) {
 **Return value**
 
 ```javascript
-{ appName: 'IRI',
-  appVersion: '0.9.24.gamma',
-  currentTime: 1467622143448,
+{
+  appName: 'IRI',
+  appVersion: '1.0.2',
+  incomingPacketsBacklog: 0,
   jreAvailableProcessors: 4,
-  jreFreeMemory: 247711328,
+  jreFreeMemory: 21436344,
   jreMaxMemory: 1908932608,
-  jreTotalMemory: 1633681408,
-  neighbors: 7,
-  tips: 13174,
-  transactionsToRequest: 0
+  jreTotalMemory: 243793920,
+  milestone: 'AIOCJTFVSYILAFYLCZZBKBVOAFLQQUQRCUBENYH9WQXTCUBLJFWPPXCJAVKDCSMCIRCXLDHM9FRPW9999',
+  neighbors: 12,
+  time: 1469881727083,
+  tips: 18344,
+  transactionsToRequest: 11
 }
 ```
+
+- **`appName`**: Name of the IOTA software you're currently using (IRI stands for Initial Reference Implementation).
+- **`appVersion`**: The version of the IOTA software you're currently running.
+- **`incomingPacketsBacklog`**: Backlog of transaction packets which have not been processed.
+- **`jreAvailableProcesses`**: Available cores on your machine for JRE.
+- **`jreFreeMemory`**: Returns the amount of free memory in the Java Virtual Machine.
+- **`jreMaxMemory`**: Returns the maximum amount of memory that the Java virtual machine will attempt to use.
+- **`jreTotalMemory`**: Returns the total amount of memory in the Java virtual machine.
+- **`milestone`**: Latest milestone of the coordinator.
+- **`time`**: Current UNIX timestamp.
+- **`tips`**: Number of tips in the network.
+- **`transactionsToRequest`**: Transactions to request during syncing process.
 
 ***
 
@@ -174,8 +189,6 @@ Returns the latest activity of your neighbors.
 
 **NodeJS request example**
 
-Please go to [this subdirectory](/examples/getNeighborsActivity/) for code examples.
-
 ```javascript
 var request = require('request');
 
@@ -183,11 +196,17 @@ var command = {
     'command': 'getNeighborsActivity'
 }
 
+var headers = {
+    'Content-Type': 'application/json',
+    'Content-Length': JSON.stringify(command).length
+};
+
 var options = {
   url: 'http://localhost:14265',
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
   },
   json: command
 };
@@ -225,18 +244,97 @@ request(options, function (error, response, data) {
        seenTransactions: 3104 } ] }
 ```
 
+**`latestPacketSent`** : ms since latest packet sent
+**`latestPacketReceived`**: ms since latest packet received
+**`nonSeenTransactions`**: Number of transactions received which were not known before (i.e. new transactions).
+**`seenTransactions`**: Number of transactions received which were known before.
+
+### `resetNeighborsActivityCounters`
+
+Resets the activity counter of the stats of your neighbors, as visible through `getNeighborsActivity`.
+
+**Return value**
+Empty JSON object.
+
+***
+
+### `getConfig`
+
+Returns the values as set in your config file (IRI.jar in Java).
+
+**Return value**
+
+```javascript
+
+{
+  lines:
+   [
+     '+udp://8.8.8.8:14265',
+     '+udp://8.8.8.8:14265',
+     '+udp://8.8.8.8:14265',
+     '^1000',
+     '#3'
+   ]
+}
+```
+
+***
+
+### `setConfig`
+
+Sets the config settings to the one as specified in your request. It should be noted that this API call replaces all of the current settings in your config file. Therefore, if you only want to append lines you should first read the config file through getConfig and then modify your request accordingly.
+
+It should be noted that the changes to your config file made by this API call are not persistent. This means that after you restart your node, all changes made with setConfig will be reverted to your settings in IRI.cfg. If you want your changes to be permanent, edit the IRI.cfg file in your folder.
+
+There are 4 different values which you can set:
+- **`+udp://IPADDRESS:PORT`**: Adds a new neighbor, as specified by IP and PORT.
+- **`-udp://IPADDRESS:PORT`**: Removes/ignores a neighbor, as specified by IP and PORT.
+- **`^{VALUE}`**: Modifies the transaction fetch gap (in ms), as specified by value. e.g. `^100`, sets the tx fetch gap to 100ms.
+- **`#{VALUE}`**: Modifies the number of cores to make available to the VM. This number should not exceed your number of cores - 1. (e.g. if you have 4 cores, set the value to `#3`.
+
+**NodeJS Example Request**
+```javascript
+var request = require('request');
+
+var command = {
+    'command': 'setConfig',
+    'lines': ['+udp://8.8.8.8:14265', '+udp://8.8.8.9:14265', '^1000', '#3']
+}
+
+var headers = {
+    'Content-Type': 'application/json',
+    'Content-Length': JSON.stringify(command).length
+};
+
+var options = {
+  url: 'http://localhost:14265',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
+  },
+  json: command
+};
+
+request(options, function (error, response, data) {
+  if (!error && response.statusCode == 200) {
+    console.log(data);
+  }
+});
+```
+
+**Return value**
+Empty JSON object.
+
+
 ***
 
 ### `getTips`
 
-Returns the current list of visible tips (unconfirmed transactions).
-
-**NodeJS example request**
-
-Please go to [this subdirectory](/examples/getTips/) for code examples.
+Returns the current list of visible tips.
 
 **Return value**
-
+List of all tips.
 
 ***
 
@@ -263,7 +361,8 @@ var options = {
   url: 'http://localhost:14265',
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
   },
   json: command
 };
@@ -277,7 +376,7 @@ request(options, function (error, response, data) {
 
 **Return value**
 
-The return value includes both, inbound and outbound transactions. The value field determines which type of transaction it is, as explained in the following table:
+The return value includes both, inbound and outbound transactions. **Persistence indicates if the transaction is confirmed or not.** The value field determines which type of transaction it is, as explained in the following table:
 
 Value | Type of Transaction | Description
 ------------ | ------------- | -------------
@@ -359,7 +458,11 @@ The return value depends on your input. For each specified input value, the comm
 - **`approvees`**: returns the list of transaction which reference (i.e. confirm) the specified transaction.
 
 ```javascript
-{ hashes: [ 'ZJVYUGTDRPDYFGFXMKOTV9ZWSGFK9CFPXTITQLQNLPPG9YNAARMKNKYQO9GSCSBIOTGMLJUFLZWSY9999' ] }
+{
+  hashes: [
+    'ZJVYUGTDRPDYFGFXMKOTV9ZWSGFK9CFPXTITQLQNLPPG9YNAARMKNKYQO9GSCSBIOTGMLJUFLZWSY9999'
+  ]
+}
 ```
 
 ***
@@ -370,7 +473,7 @@ Get the list of transactions which were bundled with the specified transaction. 
 
 Parameters | Type | Required | Description
 ------------ | ------------- | ------------- | -------------
-`transaction` | string | Yes | Hash of a transaction.
+`transaction` | string | Yes | Hash of the tail transaction in a bundle.
 
 **NodeJS request example**
 ```javascript
@@ -385,7 +488,8 @@ var options = {
   url: 'http://localhost:14265',
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Content-Length': JSON.stringify(command).length
   },
   json: command
 };
@@ -522,7 +626,7 @@ var request = require('request');
 
 var command = {
   'command': 'analyzeTransactions',
-  'hashes': ['BYSWEAUTWXHXZ9YBZISEK9LUHWGMHXCGEVNZHRLUWQFCUSDXZHOFHWHL9MQPVJXXZLIXPXPXF9KYEREFSKCPKYIIKPZVLHUTDFQKKVVBBN9ATTLPCNPJDWDEVIYYLGPZGCWXOBDXMLJC9VO9QXTTBLAXTTBFUAROYEGQIVB9MJWJKXJMCUPTWAUGFZBTZCSJVRBGMYXTVBDDS9MYUJCPZ9YDWWQNIPUAIJXXSNLKUBSCOIJPCLEFPOXFJREXQCUVUMKSDOVQGGHRNILCO9GNCLWFM9APMNMWYASHXQAYBEXF9QRIHIBHYEJOYHRQJAOKAQ9AJJFQ9WEIWIJOTZATIBOXQLBMIJU9PCGBLVDDVFP9CFFSXTDUXMEGOOFXWRTLFGV9XXMYWEMGQEEEDBTIJ9OJOXFAPFQXCDAXOUDMLVYRMRLUDBETOLRJQAEDDLNVIRQJUBZBO9CCFDHIX9MSQCWYAXJVWHCUPTRSXJDESISQPRKZAFKFRULCGVRSBLVFOPEYLEE99JD9SEBALQINPDAZHFAB9RNBH9AZWIJOTLBZVIEJIAYGMC9AZGNFWGRSWAXTYSXVROVNKCOQQIWGPNQZKHUNODGYADPYLZZZUQRTJRTODOUKAOITNOMWNGHJBBA99QUMBHRENGBHTH9KHUAOXBVIVDVYYZMSEYSJWIOGGXZVRGN999EEGQMCOYVJQRIRROMPCQBLDYIGQO9AMORPYFSSUGACOJXGAQSPDY9YWRRPESNXXBDQ9OZOXVIOMLGTSWAMKMTDRSPGJKGBXQIVNRJRFRYEZ9VJDLHIKPSKMYC9YEGHFDS9SGVDHRIXBEMLFIINOHVPXIFAZCJKBHVMQZEVWCOSNWQRDYWVAIBLSCBGESJUIBWZECPUCAYAWMTQKRMCHONIPKJYYTEGZCJYCT9ABRWTJLRQXKMWY9GWZMHYZNWPXULNZAPVQLPMYQZCYNEPOCGOHBJUZLZDPIXVHLDMQYJUUBEDXXPXFLNRGIPWBRNQQZJSGSJTTYHIGGFAWJVXWL9THTPWOOHTNQWCNYOYZXALHAZXVMIZE9WMQUDCHDJMIBWKTYH9AC9AFOT9DPCADCV9ZWUTE9QNOMSZPTZDJLJZCJGHXUNBJFUBJWQUEZDMHXGBPTNSPZBR9TGSKVOHMOQSWPGFLSWNESFKSAZY9HHERAXALZCABFYPOVLAHMIHVDBGKUMDXC9WHHTIRYHZVWNXSVQUWCR9M9RAGMFEZZKZ9XEOQGOSLFQCHHOKLDSA9QCMDGCGMRYJZLBVIFOLBIJPROKMHOYTBTJIWUZWJMCTKCJKKTR9LCVYPVJI9AHGI9JOWMIWZAGMLDFJA9WU9QAMEFGABIBEZNNAL9OXSBFLOEHKDGHWFQSHMPLYFCNXAAZYJLMQDEYRGL9QKCEUEJ9LLVUOINVSZZQHCIKPAGMT9CAYIIMTTBCPKWTYHOJIIY9GYNPAJNUJ9BKYYXSV9JSPEXYMCFAIKTGNRSQGUNIYZCRT9FOWENSZQPD9ALUPYYAVICHVYELYFPUYDTWUSWNIYFXPX9MICCCOOZIWRNJIDALWGWRATGLJXNAYTNIZWQ9YTVDBOFZRKO9CFWRPAQQRXTPACOWCPRLYRYSJARRKSQPR9TCFXDVIXLP9XVL99ERRDSOHBFJDJQQGGGCZNDQ9NYCTQJWVZIAELCRBJJFDMCNZU9FIZRPGNURTXOCDSQGXTQHKHUECGWFUUYS9J9NYQ9U9P9UUP9YMZHWWWCIASCFLCMSKTELZWUGCDE9YOKVOVKTAYPHDF9ZCCQAYPJIJNGSHUIHHCOSSOOBUDOKE9CJZGYSSGNCQJVBEFTZFJ9SQUHOASKRRGBSHWKBCBWBTJHOGQ9WOMQFHWJVEG9NYX9KWBTCAIXNXHEBDIOFO9ALYMFGRICLCKKLG9FOBOX9PDWNQRGHBKHGKKRLWTBEQMCWQRLHAVYYZDIIPKVQTHYTWQMTOACXZOQCDTJTBAAUWXSGJF9PNQIJ9AJRUMUVCPWYVYVARKR9RKGOUHHNKNVGGPDDLGKPQNOYHNKAVVKCXWXOQPZNSLATUJT9AUWRMPPSWHSTTYDFAQDXOCYTZHOYYGAIM9CELMZ9AZPWB9MJXGHOKDNNSZVUDAGXTJJSSZCPZVPZBYNNTUQABSXQWZCHDQSLGK9UOHCFKBIBNETK999999999999999999999999999999999999999999999999999999999999999999999999999999999NOXDXXKUDWLOFJLIPQIBRBMGDYCPGDNLQOLQS99EQYKBIU9VHCJVIPFUYCQDNY9APGEVYLCENJIOBLWNB999999999XKBRHUD99C99999999NKZKEKWLDKMJCI9N9XQOLWEPAYWSH9999999999999999999999999KDDTGZLIPBNZKMLTOLOXQVNGLASESDQVPTXALEKRMIOHQLUHD9ELQDBQETS9QFGTYOYWLNTSKKMVJAUXSIROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999']
+  'trytes': ['BYSWEAUTWXHXZ9YBZISEK9LUHWGMHXCGEVNZHRLUWQFCUSDXZHOFHWHL9MQPVJXXZLIXPXPXF9KYEREFSKCPKYIIKPZVLHUTDFQKKVVBBN9ATTLPCNPJDWDEVIYYLGPZGCWXOBDXMLJC9VO9QXTTBLAXTTBFUAROYEGQIVB9MJWJKXJMCUPTWAUGFZBTZCSJVRBGMYXTVBDDS9MYUJCPZ9YDWWQNIPUAIJXXSNLKUBSCOIJPCLEFPOXFJREXQCUVUMKSDOVQGGHRNILCO9GNCLWFM9APMNMWYASHXQAYBEXF9QRIHIBHYEJOYHRQJAOKAQ9AJJFQ9WEIWIJOTZATIBOXQLBMIJU9PCGBLVDDVFP9CFFSXTDUXMEGOOFXWRTLFGV9XXMYWEMGQEEEDBTIJ9OJOXFAPFQXCDAXOUDMLVYRMRLUDBETOLRJQAEDDLNVIRQJUBZBO9CCFDHIX9MSQCWYAXJVWHCUPTRSXJDESISQPRKZAFKFRULCGVRSBLVFOPEYLEE99JD9SEBALQINPDAZHFAB9RNBH9AZWIJOTLBZVIEJIAYGMC9AZGNFWGRSWAXTYSXVROVNKCOQQIWGPNQZKHUNODGYADPYLZZZUQRTJRTODOUKAOITNOMWNGHJBBA99QUMBHRENGBHTH9KHUAOXBVIVDVYYZMSEYSJWIOGGXZVRGN999EEGQMCOYVJQRIRROMPCQBLDYIGQO9AMORPYFSSUGACOJXGAQSPDY9YWRRPESNXXBDQ9OZOXVIOMLGTSWAMKMTDRSPGJKGBXQIVNRJRFRYEZ9VJDLHIKPSKMYC9YEGHFDS9SGVDHRIXBEMLFIINOHVPXIFAZCJKBHVMQZEVWCOSNWQRDYWVAIBLSCBGESJUIBWZECPUCAYAWMTQKRMCHONIPKJYYTEGZCJYCT9ABRWTJLRQXKMWY9GWZMHYZNWPXULNZAPVQLPMYQZCYNEPOCGOHBJUZLZDPIXVHLDMQYJUUBEDXXPXFLNRGIPWBRNQQZJSGSJTTYHIGGFAWJVXWL9THTPWOOHTNQWCNYOYZXALHAZXVMIZE9WMQUDCHDJMIBWKTYH9AC9AFOT9DPCADCV9ZWUTE9QNOMSZPTZDJLJZCJGHXUNBJFUBJWQUEZDMHXGBPTNSPZBR9TGSKVOHMOQSWPGFLSWNESFKSAZY9HHERAXALZCABFYPOVLAHMIHVDBGKUMDXC9WHHTIRYHZVWNXSVQUWCR9M9RAGMFEZZKZ9XEOQGOSLFQCHHOKLDSA9QCMDGCGMRYJZLBVIFOLBIJPROKMHOYTBTJIWUZWJMCTKCJKKTR9LCVYPVJI9AHGI9JOWMIWZAGMLDFJA9WU9QAMEFGABIBEZNNAL9OXSBFLOEHKDGHWFQSHMPLYFCNXAAZYJLMQDEYRGL9QKCEUEJ9LLVUOINVSZZQHCIKPAGMT9CAYIIMTTBCPKWTYHOJIIY9GYNPAJNUJ9BKYYXSV9JSPEXYMCFAIKTGNRSQGUNIYZCRT9FOWENSZQPD9ALUPYYAVICHVYELYFPUYDTWUSWNIYFXPX9MICCCOOZIWRNJIDALWGWRATGLJXNAYTNIZWQ9YTVDBOFZRKO9CFWRPAQQRXTPACOWCPRLYRYSJARRKSQPR9TCFXDVIXLP9XVL99ERRDSOHBFJDJQQGGGCZNDQ9NYCTQJWVZIAELCRBJJFDMCNZU9FIZRPGNURTXOCDSQGXTQHKHUECGWFUUYS9J9NYQ9U9P9UUP9YMZHWWWCIASCFLCMSKTELZWUGCDE9YOKVOVKTAYPHDF9ZCCQAYPJIJNGSHUIHHCOSSOOBUDOKE9CJZGYSSGNCQJVBEFTZFJ9SQUHOASKRRGBSHWKBCBWBTJHOGQ9WOMQFHWJVEG9NYX9KWBTCAIXNXHEBDIOFO9ALYMFGRICLCKKLG9FOBOX9PDWNQRGHBKHGKKRLWTBEQMCWQRLHAVYYZDIIPKVQTHYTWQMTOACXZOQCDTJTBAAUWXSGJF9PNQIJ9AJRUMUVCPWYVYVARKR9RKGOUHHNKNVGGPDDLGKPQNOYHNKAVVKCXWXOQPZNSLATUJT9AUWRMPPSWHSTTYDFAQDXOCYTZHOYYGAIM9CELMZ9AZPWB9MJXGHOKDNNSZVUDAGXTJJSSZCPZVPZBYNNTUQABSXQWZCHDQSLGK9UOHCFKBIBNETK999999999999999999999999999999999999999999999999999999999999999999999999999999999NOXDXXKUDWLOFJLIPQIBRBMGDYCPGDNLQOLQS99EQYKBIU9VHCJVIPFUYCQDNY9APGEVYLCENJIOBLWNB999999999XKBRHUD99C99999999NKZKEKWLDKMJCI9N9XQOLWEPAYWSH9999999999999999999999999KDDTGZLIPBNZKMLTOLOXQVNGLASESDQVPTXALEKRMIOHQLUHD9ELQDBQETS9QFGTYOYWLNTSKKMVJAUXSIROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999']
 }
 
 var options = {
@@ -562,6 +666,217 @@ request(options, function (error, response, data) {
    ]
 }
 ```
+
+- **`hash`**: Transaction hash.
+- **`type`**:  The type of transaction (-1 is spend, 1 is receive).
+- **`signatureMessageChunk`**: Signature used for signing the transaction. If no signature was required for signing the transaction (e.g. a simple message), then it will contain the message value.
+- **`digest`**: Hash digest of the transaction.
+- **`address`**: Address of the recipient of this transaction.
+- **`value`**: Value transferred.
+- **`bundle`**: Bundle hash.
+- **`signatureNonce`**: None used for generating the signature.
+- **`approvalNonce`**:
+- **`approvedTrunkTransaction`**: Trunk transaction which was referenced by this transaction.
+- **`approvedBranchTransaction`**:  Branch transaction which was referenced by this transaction.
+
+***
+
+### `getNewAddress`
+
+Generates a new address for your specified account (seed + securityLevel). The generation of the address itself is done deterministically, this means that you have to attach the newly generated address to the Tangle in order to get a new address. Else repeatedly calling `getNewAddress` will always generate the same address.
+
+In order to attach the address to the tangle, all you have to do is send a transaction to the address: this can either be a transaction with value set to zero and an empty message (least amount of Proof of Work required), or a value transfer.
+
+Parameters | Type | Required | Description
+------------ | ------------- | ------------- | -------------
+`seed` | string | Yes | Seed from which the transfer will be made and the specified value subtracted.
+`securityLevel` | integer | Yes | The security level of the transaction.
+
+**NodeJS request example**
+
+```javascript
+var request = require('request');
+
+var command = {
+  'command': 'getNewAddress',
+  'seed': 'AAA999999999999999999999999999999999999999999999999999999999999999999999999999999',
+  'securityLevel': 1
+}
+
+var options = {
+  url: 'http://localhost:14265',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
+  },
+  json: command
+};
+
+request(options, function (error, response, data) {
+  if (!error && response.statusCode == 200) {
+    console.log(data);
+  }
+});
+```
+
+**Return Value**
+```javascript
+{
+  address: 'KIXDAIGV9GH99ZKJNUHIWCVSBSQBZOYUCRUDL9YYTTCWPYCDEQHWECYFBPKOCICUFVEJBDQUKAOMXUFSB'
+}
+```
+
+***
+
+### `prepareTransfers`
+
+Prepares the trytes (raw transaction data) for a list of transfers for a specified account. Each element in the `transfers` list needs to conform to the standard schema of a transaction. This means that the maximum `value` per transfer is `3812798742493` and the `message` field needs to be properly encoded into trytes.
+
+Each transaction will output a new tryte value. These values can then be input into `attachToTangle`.
+
+Parameters | Type | Required | Description
+------------ | ------------- | ------------- | -------------
+`seed` | string | Yes | Seed from which the transfer will be made and the specified value subtracted.
+`address` | string | Yes | Recipient’s address.
+`securityLevel` | integer | Yes | The security level of the transaction.
+`transfers` | list | Yes | List of transactions, each element has address, value and message fields.
+
+**NodeJS request example**
+
+```javascript
+var request = require('request');
+
+var command = {
+  'command': 'prepareTransfers',
+  'seed': 'AAA999999999999999999999999999999999999999999999999999999999999999999999999999999',
+  'securityLevel': 1,
+  'transfers': [
+      {
+          'address': 'NOXDXXKUDWLOFJLIPQIBRBMGDYCPGDNLQOLQS99EQYKBIU9VHCJVIPFUYCQDNY9APGEVYLCENJIOBLWNB',
+          'value': '1',
+          'message': ''
+      }, {
+          'address': 'NOXDXXKUDWLOFJLIPQIBRBMGDYCPGDNLQOLQS99EQYKBIU9VHCJVIPFUYCQDNY9APGEVYLCENJIOBLWNB',
+          'value': '0',
+          'message': 'SECRETMESSAGE'
+      }
+  ]
+}
+
+var options = {
+  url: 'http://localhost:14265',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
+  },
+  json: command
+};
+
+request(options, function (error, response, data) {
+  if (!error && response.statusCode == 200) {
+    console.log(data);
+  }
+});
+```
+
+**Return Value**
+```javascript
+{
+  trytes:
+   [ 'TRYTEVALUESHERE1', 'TRYTEVALUESHERE2' ]
+}
+```
+
+***
+
+### `getTransactionsToApprove`
+
+Tip selection which returns `trunkTransactionToApprove` and `branchTransactionToApprove`. The input value is the latest coordinator `milestone`, as provided through the `getNodeInfo` API call.
+
+Parameters | Type | Required | Description
+------------ | ------------- | ------------- | -------------
+`milestone` | string | Yes | Latest coordinator milestone
+
+**NodeJS Example Request**
+
+```javascript
+var request = require('request');
+
+var command = {
+  'command': 'getTransactionsToApprove',
+  'milestone': 'SMYMAKKPSUKCKDRUEYCGZJTYCZ9HHDMDUWBAPXARGURPQRHTAJDASRWMIDTPTBNDKDEFBUTBGGAFX9999'
+}
+
+var options = {
+  url: 'http://localhost:14265',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
+  },
+  json: command
+};
+
+request.post('http://localhost:14265',JSON.stringify(command), function (error, response, data) {
+  if (!error && response.statusCode == 200) {
+    console.log(data);
+  }
+});
+```
+
+**Return Value**
+```javascript
+{
+  "trunkTransactionToApprove": "JVMTDGDPDFYHMZPMWEKKANBQSLSDTIIHAYQUMZOKHXXXGJHJDQPOMDOMNRDKYCZRUFZROZDADTHZC9999", "branchTransactionToApprove": "P9KFSJVGSPLXAEBJSHWFZLGP9GGJTIO9YITDEHATDTGAFLPLBZ9FOFWWTKMAZXZHFGQHUOXLXUALY9999"
+}
+```
+
+***
+
+### `attachToTangle`
+
+Attaches the specified transactions (trytes) to the Tangle by doing Proof of Work. You need to supply `branchTransactionToApprove` as well as `trunkTransactionToApprove` (basically the tips which you're going to reference with this transaction) - both of which you'll get through the `getTransactionsToApprove` API call.
+
+The returned value is a different set of tryte values which you can input into `broadcastTransactions` and `storeTransactions`.
+
+**NodeJS Example Request**
+
+```javascript
+var request = require('request');
+
+var command = {
+    'command': 'attachToTangle',
+    'trunkTransactionToApprove': 'JVMTDGDPDFYHMZPMWEKKANBQSLSDTIIHAYQUMZOKHXXXGJHJDQPOMDOMNRDKYCZRUFZROZDADTHZC9999',
+    'branchTransactionToApprove': 'P9KFSJVGSPLXAEBJSHWFZLGP9GGJTIO9YITDEHATDTGAFLPLBZ9FOFWWTKMAZXZHFGQHUOXLXUALY9999',
+    'minWeightMagnitude': 13,
+    'trytes': ['TRYTEVALUEHERE']
+}
+
+var options = {
+  url: 'http://localhost:14265',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': JSON.stringify(command).length
+  },
+  json: command
+};
+
+request(options, function (error, response, data) {
+  if (!error && response.statusCode == 200) {
+    console.log(data);
+  }
+});
+
+```
+
+**Return Value**
+```javascript
+{'trytes':['TRYTEVALUEHERE']}
+```
+
 
 ***
 

@@ -9,7 +9,8 @@ var options = {
   url: 'http://localhost:14265',
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
   },
   json: command
 };

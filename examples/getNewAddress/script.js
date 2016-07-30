@@ -1,13 +1,9 @@
 var request = require('request');
 
 var command = {
-  'command': 'transfer',
+  'command': 'getNewAddress',
   'seed': 'AAA999999999999999999999999999999999999999999999999999999999999999999999999999999',
-  'address': 'NOXDXXKUDWLOFJLIPQIBRBMGDYCPGDNLQOLQS99EQYKBIU9VHCJVIPFUYCQDNY9APGEVYLCENJIOBLWNB',
-  'value': '0',
-  'message': '',
-  'securityLevel': 1,
-  'minWeightMagnitude': 13
+  'securityLevel': 1
 }
 
 var options = {
@@ -15,7 +11,7 @@ var options = {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Content-Length': JSON.stringify(command).length
+    'Content-Length': Buffer.byteLength(JSON.stringify(command))
   },
   json: command
 };

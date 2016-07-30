@@ -1,9 +1,20 @@
 var request = require('request');
 
 var command = {
-  'command': 'getTransfers',
+  'command': 'prepareTransfers',
   'seed': 'AAA999999999999999999999999999999999999999999999999999999999999999999999999999999',
-  'securityLevel': 1
+  'securityLevel': 1,
+  'transfers': [
+      {
+          'address': 'NOXDXXKUDWLOFJLIPQIBRBMGDYCPGDNLQOLQS99EQYKBIU9VHCJVIPFUYCQDNY9APGEVYLCENJIOBLWNB',
+          'value': '1',
+          'message': ''
+      }, {
+          'address': 'NOXDXXKUDWLOFJLIPQIBRBMGDYCPGDNLQOLQS99EQYKBIU9VHCJVIPFUYCQDNY9APGEVYLCENJIOBLWNB',
+          'value': '0',
+          'message': 'SECRETMESSAGE'
+      }
+  ]
 }
 
 var options = {

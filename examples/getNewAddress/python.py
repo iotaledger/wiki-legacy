@@ -2,10 +2,9 @@ import urllib2
 import json
 
 command = {
-    'command': 'generateNewAddress',
+    'command': 'getNewAddress',
     'seed': 'AAA999999999999999999999999999999999999999999999999999999999999999999999999999999',
-    'securityLevel': 1,
-    'minWeightMagnitude': 13
+    'securityLevel': 1
 }
 
 stringified = json.dumps(command)

@@ -1,0 +1,4 @@
+curl http://localhost:14265 \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{"command": "getNewAddress", "seed": "AAA999999999999999999999999999999999999999999999999999999999999999999999999999999", "securityLevel": 1}'

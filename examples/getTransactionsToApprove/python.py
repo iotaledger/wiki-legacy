@@ -2,11 +2,11 @@ import urllib2
 import json
 
 command = {
-    'command': 'findTransactions',
-    'addresses': ['QHBYXQWRAHQJZEIARWSQGZJTAIITOZRMBFICIPAVD9YRJMXFXBDPFDTRAHHHP9YPDUVTNOFWZGFGWMYHEKNAGNJHMW']
+    'command': 'getTransactionsToApprove',
+    'milestone': 'SMYMAKKPSUKCKDRUEYCGZJTYCZ9HHDMDUWBAPXARGURPQRHTAJDASRWMIDTPTBNDKDEFBUTBGGAFX9999'
 }
 
-stringified = "|" + json.dumps(command) + "|"
+stringified = json.dumps(command)
 
 headers = {'content-type': 'application/json'}
 
