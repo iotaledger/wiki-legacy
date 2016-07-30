@@ -29,24 +29,29 @@ For a more thorough introduction about IOTA, please refer to ….
 - **[API Commands](#api-commands)**
     - **[`getNodeInfo`](#getnodeinfo)**
     - **[`getNeighborsActivity`](#getneighborsactivity)**
-    - **[`resetNeighborsActivityCounters`](#resetNeighborsActivityCounters)**
+    - **[`resetNeighborsActivityCounters`](#resetneighborsactivitycounters)**
+    - **[`getConfig`](#getconfig)**
+    - **[`setConfig`](#setconfig)**
     - **[`getTips`](#gettips)**
     - **[`getTransfers`](#gettransfers)**
     - **[`findTransactions`](#findtransactions)**
     - **[`getBundle`](#getbundle)**
-    - **[`getTransactions`](#gettransactions)**
+    - **[`getTrytes`](#getrytes)**
     - **[`analyzeTransactions`](#analyzetransactions)**
+    - **[`getNewAddress`](#getnewaddress)**
+    - **[`prepareTransfers`](#preparetransfers)**
+    - **[`getTransactionsToApprove`](#gettransactionstoapprove)**
+    - **[`attachToTangle`](#attachtotangle)**
+    - **[`broadcastTransactions`](#broadcastransactions)**
+    - **[`storeTransactions`](#storeTransactions)**
     - **[`transfer`](#transfer)**
     - **[`replayTransfer`](#replaytransfer)**
-    - **[`generateNewAddress`](#generatenewaddress)**
-    - **[`broadcastTransactions`](#broadcasttransactions)**
-    - **[`broadcastAllTransactions`](#broadcastalltransactions)**
 
 ***
 
 ## Installation
 
-For an easy to follow tutorial, please go to [http://necropaz.github.io/IOTAtutorial.html](http://necropaz.github.io/IOTAtutorial.html) More tutorials coming soon.
+For an easy to follow tutorial, please go to [https://iota.readme.io](https://iota.readme.io) More tutorials coming soon.
 
 ## Glossary
 
@@ -877,6 +882,15 @@ request(options, function (error, response, data) {
 {'trytes':['TRYTEVALUEHERE']}
 ```
 
+***
+
+### `broadcastTransactions`
+
+Broadcast a list of transactions to all neighbors.
+
+Parameters | Type | Required | Description
+------------ | ------------- | ------------- | -------------
+`trytes` | list | Yes | List of raw data of transactions to be rebroadcast.
 
 ***
 
@@ -982,31 +996,3 @@ Returns the number of neighbors the transactions were broadcast to.
    "neighbors":7
 }
 ```
-
-***
-
-### `generateNewAddress`
-
-Generates a new address for a specified seed.
-
-Parameters | Type | Required | Description
------------- | ------------- | ------------- | -------------
-`seed` | string | Yes | Seed of a specified account. Has to be 81-chars encoded.
-`securityLevel` | integer | Yes | Security level of the address you want to generate. Can take values 0, 1, or 2
-`minWeightMagnitude` | integer | Yes | Weight of Proof of Work. Can only take value 13
-
-#### Returns
-
-- **`address`**
-
-### `broadcastTransactions`
-
-Broadcast a list of transactions to all neighbors.
-
-Parameters | Type | Required | Description
------------- | ------------- | ------------- | -------------
-`trytes` | list | Yes | List of raw data of transactions to be rebroadcast.
-
-### `broadcastAllTransactions`
-
-Broadcasts all transactions which are stored in the local node’s storage.
