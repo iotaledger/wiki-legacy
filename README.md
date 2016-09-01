@@ -28,13 +28,12 @@ For a more thorough introduction about IOTA, please refer to ….
     - **[Fields](#fields)**
 - **[API Commands](#api-commands)**
     - **[`getNodeInfo`](#getnodeinfo)**
-    - **[`getNeighborsActivity`](#getneighborsactivity)**
-    - **[`resetNeighborsActivityCounters`](#resetneighborsactivitycounters)**
-    - **[`getConfig`](#getconfig)**
-    - **[`setConfig`](#setconfig)**
+    - **[`getMilestone`](#getmilestone)**
+    - **[`getPeers`](#getneighborsactivity)**
     - **[`getTips`](#gettips)**
     - **[`getTransfers`](#gettransfers)**
     - **[`findTransactions`](#findtransactions)**
+    - **[`getInclusionStates`](#getinclusionstates)**
     - **[`getBundle`](#getbundle)**
     - **[`getTrytes`](#getrytes)**
     - **[`analyzeTransactions`](#analyzetransactions)**
@@ -42,7 +41,9 @@ For a more thorough introduction about IOTA, please refer to ….
     - **[`prepareTransfers`](#preparetransfers)**
     - **[`getTransactionsToApprove`](#gettransactionstoapprove)**
     - **[`attachToTangle`](#attachtotangle)**
-    - **[`broadcastTransactions`](#broadcastransactions)**
+    - **[`interruptAttachingToTangle`](#interruptattachtotangle)**
+    - **[`pushTransactions`](#pushtransactions)**
+    - **[`pullTransactions`](#pulltransactions)**
     - **[`storeTransactions`](#storeTransactions)**
     - **[`transfer`](#transfer)**
     - **[`replayTransfer`](#replaytransfer)**
@@ -166,7 +167,7 @@ request(options, function (error, response, data) {
   jreFreeMemory: 21436344,
   jreMaxMemory: 1908932608,
   jreTotalMemory: 243793920,
-  milestone: 'AIOCJTFVSYILAFYLCZZBKBVOAFLQQUQRCUBENYH9WQXTCUBLJFWPPXCJAVKDCSMCIRCXLDHM9FRPW9999',
+  milestoneIndex: 45863,
   neighbors: 12,
   time: 1469881727083,
   tips: 18344,
@@ -188,9 +189,20 @@ request(options, function (error, response, data) {
 
 ***
 
-### `getNeighborsActivity`
+### `getMilestone`
 
-Returns the latest activity of your neighbors.
+Returns a milestone from a given index.
+
+Parameters | Type | Required | Description
+------------ | ------------- | ------------- | -------------
+`index` | integer | Yes | Milestone index.
+
+
+***
+
+### `getPeers`
+
+Returns the latest activity of your peers.
 
 **NodeJS request example**
 
@@ -198,7 +210,7 @@ Returns the latest activity of your neighbors.
 var request = require('request');
 
 var command = {
-    'command': 'getNeighborsActivity'
+    'command': 'getPeers'
 }
 
 var headers = {
@@ -226,111 +238,25 @@ request(options, function (error, response, data) {
 **Return value**
 
 ```javascript
-{ neighbors:
-   [ { node: '/8.8.8.8:14265',
-       latestPacketSent: 1204,
-       latestPacketReceived: 1222,
-       nonSeenTransactions: 11,
-       seenTransactions: 4484 },
-     { node: '/8.8.8.8:14265',
-       latestPacketSent: 2161863,
-       latestPacketReceived: 2161875,
-       nonSeenTransactions: 1,
-       seenTransactions: 706 },
-     { node: '/8.8.8.8:14265',
-       latestPacketSent: 2169118,
-       latestPacketReceived: 2169122,
-       nonSeenTransactions: 4,
-       seenTransactions: 1939 },
-     { node: '/8.8.8.8:14265',
-       latestPacketSent: 2209237,
-       latestPacketReceived: 2209246,
-       nonSeenTransactions: 5,
-       seenTransactions: 3104 } ] }
-```
-
-**`latestPacketSent`** : ms since latest packet sent
-**`latestPacketReceived`**: ms since latest packet received
-**`nonSeenTransactions`**: Number of transactions received which were not known before (i.e. new transactions).
-**`seenTransactions`**: Number of transactions received which were known before.
-
-### `resetNeighborsActivityCounters`
-
-Resets the activity counter of the stats of your neighbors, as visible through `getNeighborsActivity`.
-
-**Return value**
-Empty JSON object.
-
-***
-
-### `getConfig`
-
-Returns the values as set in your config file (IRI.jar in Java).
-
-**Return value**
-
-```javascript
-
-{
-  lines:
+{ peers:
    [
-     '+udp://8.8.8.8:14265',
-     '+udp://8.8.8.8:14265',
-     '+udp://8.8.8.8:14265',
-     '^1000',
-     '#3'
-   ]
+     { address: '/8.8.8.8:14265',
+       latestReceivedNewTransactionTimeDelta: 56323,
+       latestSentTransactionTimeDelta: '1629' },
+     { address: '/8.8.8.8:14265',
+       latestReceivedNewTransactionTimeDelta: null,
+       latestSentTransactionTimeDelta: '4285' },
+     { address: '/8.8.8.8:14265',
+       latestReceivedNewTransactionTimeDelta: null,
+       latestSentTransactionTimeDelta: '9821'
+     }
+  ]
 }
 ```
 
-***
-
-### `setConfig`
-
-Sets the config settings to the one as specified in your request. It should be noted that this API call replaces all of the current settings in your config file. Therefore, if you only want to append lines you should first read the config file through getConfig and then modify your request accordingly.
-
-It should be noted that the changes to your config file made by this API call are not persistent. This means that after you restart your node, all changes made with setConfig will be reverted to your settings in IRI.cfg. If you want your changes to be permanent, edit the IRI.cfg file in your folder.
-
-There are 4 different values which you can set:
-- **`+udp://IPADDRESS:PORT`**: Adds a new neighbor, as specified by IP and PORT.
-- **`-udp://IPADDRESS:PORT`**: Removes/ignores a neighbor, as specified by IP and PORT.
-- **`^{VALUE}`**: Modifies the transaction fetch gap (in ms), as specified by value. e.g. `^100`, sets the tx fetch gap to 100ms.
-- **`#{VALUE}`**: Modifies the number of cores to make available to the VM. This number should not exceed your number of cores - 1. (e.g. if you have 4 cores, set the value to `#3`.
-
-**NodeJS Example Request**
-```javascript
-var request = require('request');
-
-var command = {
-    'command': 'setConfig',
-    'lines': ['+udp://8.8.8.8:14265', '+udp://8.8.8.9:14265', '^1000', '#3']
-}
-
-var headers = {
-    'Content-Type': 'application/json',
-    'Content-Length': JSON.stringify(command).length
-};
-
-var options = {
-  url: 'http://localhost:14265',
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Content-Length': Buffer.byteLength(JSON.stringify(command))
-  },
-  json: command
-};
-
-request(options, function (error, response, data) {
-  if (!error && response.statusCode == 200) {
-    console.log(data);
-  }
-});
-```
-
-**Return value**
-Empty JSON object.
-
+**`address`** : address of your peer
+**`latestReceivedNewTransactionTimeDelta`**: ms since latest packet received
+**`latestSentTransactionTimeDelta`**: ms since latest packet sent
 
 ***
 
@@ -472,9 +398,55 @@ The return value depends on your input. For each specified input value, the comm
 
 ***
 
+### `getInclusionStates`
+
+Get the inclusion states of a set of transactions. This is for determining if a transaction was accepted and confirmed by the network or not. You can search for multiple tips (and thus, milestones) to get past inclusion states of transactions. This API call simply returns a list of boolean values in the same order as the transaction list you submitted, thus you get a true/false whether a transaction is confirmed or not.
+
+Parameters | Type | Required | Description
+------------ | ------------- | ------------- | -------------
+`transactions` | list | Yes | List of transactions you want to get the inclusion state for.
+`tips` | list | Yes | List of tips (including milestones) you want to search through.
+
+
+**NodeJS request example**
+
+```javascript
+var request = require('request');
+
+var command = {
+    'command': 'getInclusionStates',
+    'transactions': ['QHBYXQWRAHQJZEIARWSQGZJTAIITOZRMBFICIPAVD9YRJMXFXBDPFDTRAHHHP9YPDUVTNOFWZGFGWMYHEKNAGNJHMW'],
+    'tips': ['ZIJGAJ9AADLRPWNCYNNHUHRRAC9QOUDATEDQUMTNOTABUVRPTSTFQDGZKFYUUIE9ZEBIVCCXXXLKX9999']
+}
+
+var options = {
+  url: 'http://localhost:14265',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  json: command
+};
+
+request(options, function (error, response, data) {
+  if (!error && response.statusCode == 200) {
+    console.log(data);
+  }
+});
+
+```
+
+**Return Value**
+
+```javascript
+{"states": [true], "duration": 91}
+```
+
+***
+
 ### `getBundle`
 
-Get the list of transactions which were bundled with the specified transaction. This call returns the full value of all individual transactions, not just the hashes.
+Get the list of transactions which were bundled with the specified transaction. This call returns the full value of all individual transactions, not just the hashes. This API call only works with tail (index = 0) transaction of a bundle.
 
 Parameters | Type | Required | Description
 ------------ | ------------- | ------------- | -------------
@@ -523,8 +495,8 @@ It should be noted that I've removed the `signatureMessageChunk` value in this e
        bundle: 'NKZKEKWLDKMJCI9N9XQOLWEPAYW',
        signatureNonce: '999999999999999999999999999',
        approvalNonce: 'WD9NOXDAYTXABZOPSEI9XZSMRB9LGKQER9QAERTNSOUIFMQKPAQHECGVBJRMW9MSEMYFZOUZF9CDLGYOE',
-       approvedTrunkTransaction: 'VLVNRHJNYQIXNVJVTVJHDKPNPBECKYLGZYMDHPJLGWHYSFCFUOSCRQGBJUZSZRJVAYJAFDZOBQCJA9999',
-       approvedBranchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999' },
+       trunkTransaction: 'VLVNRHJNYQIXNVJVTVJHDKPNPBECKYLGZYMDHPJLGWHYSFCFUOSCRQGBJUZSZRJVAYJAFDZOBQCJA9999',
+       branchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999' },
      { hash: 'VLVNRHJNYQIXNVJVTVJHDKPNPBECKYLGZYMDHPJLGWHYSFCFUOSCRQGBJUZSZRJVAYJAFDZOBQCJA9999',
        type: 1,
        signatureMessageChunk: 'SHORTENEDFORTUTORIAL',
@@ -536,8 +508,8 @@ It should be noted that I've removed the `signatureMessageChunk` value in this e
        bundle: 'NKZKEKWLDKMJCI9N9XQOLWEPAYW',
        signatureNonce: '999999999999999999999999999',
        approvalNonce: 'OBPYOZAJAJJPYCXAYTGTECDTNMAYLQAJTPAGS9YCSQJVCZZEMQOADTPZRKIDXRPXKSOLTAPPER99KMSUZ',
-       approvedTrunkTransaction: 'UWPITSAOKBQYHADDZHSDNTIUNETKLKFBDMRWKLJXSUOUZEUPICAGJWISEEAVLHGLHUUMJYZBKQW9C9999',
-       approvedBranchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999' },
+       trunkTransaction: 'UWPITSAOKBQYHADDZHSDNTIUNETKLKFBDMRWKLJXSUOUZEUPICAGJWISEEAVLHGLHUUMJYZBKQW9C9999',
+       branchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999' },
      { hash: 'UWPITSAOKBQYHADDZHSDNTIUNETKLKFBDMRWKLJXSUOUZEUPICAGJWISEEAVLHGLHUUMJYZBKQW9C9999',
        type: -1,
        signatureMessageChunk: 'SHORTENEDFORTUTORIAL',
@@ -549,8 +521,8 @@ It should be noted that I've removed the `signatureMessageChunk` value in this e
        bundle: 'NKZKEKWLDKMJCI9N9XQOLWEPAYW',
        signatureNonce: 'SH9999999999999999999999999',
        approvalNonce: 'VCF9VJOIYNBVTZMLEVIIGYXZOJVHYCEHLOBLNMESIBCGQOSOWZCKFX9SOVPEDEWJYGITUVAVRYE9OPNOA',
-       approvedTrunkTransaction: 'OAATQS9VQLSXCLDJVJJVYUGONXAXOFMJOZNSYWRZSWECMXAQQURHQBJNLD9IOFEPGZEPEMPXCIVRX9999',
-       approvedBranchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999' },
+       trunkTransaction: 'OAATQS9VQLSXCLDJVJJVYUGONXAXOFMJOZNSYWRZSWECMXAQQURHQBJNLD9IOFEPGZEPEMPXCIVRX9999',
+       branchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999' },
      { hash: 'OAATQS9VQLSXCLDJVJJVYUGONXAXOFMJOZNSYWRZSWECMXAQQURHQBJNLD9IOFEPGZEPEMPXCIVRX9999',
        type: -1,
        signatureMessageChunk: 'SHORTENEDFORTUTORIAL',
@@ -562,8 +534,8 @@ It should be noted that I've removed the `signatureMessageChunk` value in this e
        bundle: 'NKZKEKWLDKMJCI9N9XQOLWEPAYW',
        signatureNonce: 'SH9999999999999999999999999',
        approvalNonce: 'KDDTGZLIPBNZKMLTOLOXQVNGLASESDQVPTXALEKRMIOHQLUHD9ELQDBQETS9QFGTYOYWLNTSKKMVJAUXS',
-       approvedTrunkTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999',
-       approvedBranchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999'
+       trunkTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999',
+       branchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999'
      }
   ]
 }
@@ -665,8 +637,8 @@ request(options, function (error, response, data) {
        bundle: 'NKZKEKWLDKMJCI9N9XQOLWEPAYW',
        signatureNonce: 'SH9999999999999999999999999',
        approvalNonce: 'KDDTGZLIPBNZKMLTOLOXQVNGLASESDQVPTXALEKRMIOHQLUHD9ELQDBQETS9QFGTYOYWLNTSKKMVJAUXS',
-       approvedTrunkTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999',
-       approvedBranchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999'
+       trunkTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999',
+       branchTransaction: 'IROUICDOXKSYZTDPEDKOQENTJOWJONDEWROCEJIEWFWLUAACVSJFTMCHHXJBJRKAAPUDXXVXFWP9X9999'
      }
    ]
 }
@@ -680,9 +652,9 @@ request(options, function (error, response, data) {
 - **`value`**: Value transferred.
 - **`bundle`**: Bundle hash.
 - **`signatureNonce`**: None used for generating the signature.
-- **`approvalNonce`**:
-- **`approvedTrunkTransaction`**: Trunk transaction which was referenced by this transaction.
-- **`approvedBranchTransaction`**:  Branch transaction which was referenced by this transaction.
+- **`approvalNonce`**: Nonce used for the Proof of Work.
+- **`trunkTransaction`**: Trunk transaction which was referenced by this transaction.
+- **`branchTransaction`**:  Branch transaction which was referenced by this transaction.
 
 ***
 
@@ -798,7 +770,7 @@ request(options, function (error, response, data) {
 
 ### `getTransactionsToApprove`
 
-Tip selection which returns `trunkTransactionToApprove` and `branchTransactionToApprove`. The input value is the latest coordinator `milestone`, as provided through the `getNodeInfo` API call.
+Tip selection which returns `trunkTransaction` and `branchTransaction`. The input value is the latest coordinator `milestone`, as provided through the `getNodeInfo` API call.
 
 Parameters | Type | Required | Description
 ------------ | ------------- | ------------- | -------------
@@ -834,7 +806,7 @@ request.post('http://localhost:14265',JSON.stringify(command), function (error, 
 **Return Value**
 ```javascript
 {
-  "trunkTransactionToApprove": "JVMTDGDPDFYHMZPMWEKKANBQSLSDTIIHAYQUMZOKHXXXGJHJDQPOMDOMNRDKYCZRUFZROZDADTHZC9999", "branchTransactionToApprove": "P9KFSJVGSPLXAEBJSHWFZLGP9GGJTIO9YITDEHATDTGAFLPLBZ9FOFWWTKMAZXZHFGQHUOXLXUALY9999"
+  "trunkTransaction": "JVMTDGDPDFYHMZPMWEKKANBQSLSDTIIHAYQUMZOKHXXXGJHJDQPOMDOMNRDKYCZRUFZROZDADTHZC9999", "branchTransaction": "P9KFSJVGSPLXAEBJSHWFZLGP9GGJTIO9YITDEHATDTGAFLPLBZ9FOFWWTKMAZXZHFGQHUOXLXUALY9999"
 }
 ```
 
@@ -842,9 +814,9 @@ request.post('http://localhost:14265',JSON.stringify(command), function (error, 
 
 ### `attachToTangle`
 
-Attaches the specified transactions (trytes) to the Tangle by doing Proof of Work. You need to supply `branchTransactionToApprove` as well as `trunkTransactionToApprove` (basically the tips which you're going to reference with this transaction) - both of which you'll get through the `getTransactionsToApprove` API call.
+Attaches the specified transactions (trytes) to the Tangle by doing Proof of Work. You need to supply `branchTransaction` as well as `trunkTransaction` (basically the tips which you're going to reference with this transaction) - both of which you'll get through the `getTransactionsToApprove` API call.
 
-The returned value is a different set of tryte values which you can input into `broadcastTransactions` and `storeTransactions`.
+The returned value is a different set of tryte values which you can input into `pushTransactions` and `storeTransactions`. The returned tryte value, the last 243 trytes basically consist of the: `signatureNonce` + `trunkTransaction` + `branchTransaction`. These are valid trytes which you can then accepted by the network.
 
 **NodeJS Example Request**
 
@@ -853,8 +825,8 @@ var request = require('request');
 
 var command = {
     'command': 'attachToTangle',
-    'trunkTransactionToApprove': 'JVMTDGDPDFYHMZPMWEKKANBQSLSDTIIHAYQUMZOKHXXXGJHJDQPOMDOMNRDKYCZRUFZROZDADTHZC9999',
-    'branchTransactionToApprove': 'P9KFSJVGSPLXAEBJSHWFZLGP9GGJTIO9YITDEHATDTGAFLPLBZ9FOFWWTKMAZXZHFGQHUOXLXUALY9999',
+    'trunkTransaction': 'JVMTDGDPDFYHMZPMWEKKANBQSLSDTIIHAYQUMZOKHXXXGJHJDQPOMDOMNRDKYCZRUFZROZDADTHZC9999',
+    'branchTransaction': 'P9KFSJVGSPLXAEBJSHWFZLGP9GGJTIO9YITDEHATDTGAFLPLBZ9FOFWWTKMAZXZHFGQHUOXLXUALY9999',
     'minWeightMagnitude': 13,
     'trytes': ['TRYTEVALUEHERE']
 }
@@ -884,13 +856,45 @@ request(options, function (error, response, data) {
 
 ***
 
-### `broadcastTransactions`
+
+### `interruptAttachingToTangle`
+
+Interrupts and completely aborts the `attachToTangle` process.
+
+**Return value**
+Nothing.
+
+
+***
+
+### `pushTransactions`
 
 Broadcast a list of transactions to all neighbors.
 
 Parameters | Type | Required | Description
 ------------ | ------------- | ------------- | -------------
 `trytes` | list | Yes | List of raw data of transactions to be rebroadcast.
+
+***
+
+### `pullTransactions`
+
+Request a set of transactions from your neighbors. This API call does not return anything, but if a neighbor has the transaction locally they will send it to you.
+
+Parameters | Type | Required | Description
+------------ | ------------- | ------------- | -------------
+`hashes` | list | Yes | List of transaction hashes to request from your neighbors.
+
+***
+
+### `storeTransactions`
+
+Store a list of transactions locally.
+
+Parameters | Type | Required | Description
+------------ | ------------- | ------------- | -------------
+`trytes` | list | Yes | List of raw data of transactions to be stored.
+
 
 ***
 
@@ -996,3 +1000,7 @@ Returns the number of neighbors the transactions were broadcast to.
    "neighbors":7
 }
 ```
+
+***
+
+# Workflow Examples

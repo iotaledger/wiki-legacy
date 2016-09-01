@@ -1,4 +1,0 @@
-curl http://localhost:14265 \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -d '{"command": "getConfig", "lines": ["+udp://8.8.8.8:14265", "+udp://8.8.8.9:14265", "^1000", "#3"]}'
