@@ -1,4 +1,0 @@
-curl http://localhost:14265 \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -d '{"command": "getTrytes", "hashes": ["OAATQS9VQLSXCLDJVJJVYUGONXAXOFMJOZNSYWRZSWECMXAQQURHQBJNLD9IOFEPGZEPEMPXCIVRX9999"]}'

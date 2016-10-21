@@ -1,4 +1,0 @@
-curl http://localhost:14265 \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -d '{"command": "replayTransfer", "transaction": "BXMNQGX9FGRCWDYNGBNKOBVRZKHWNDZQSX9OVWMVRMMJIGLMBEIMZIMEKDZBFIPBYALKOQHAUZM9Z9999"}'

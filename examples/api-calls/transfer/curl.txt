@@ -1,4 +1,0 @@
-curl http://localhost:14265 \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -d '{"command": "transfer", "seed": "AAA999999999999999999999999999999999999999999999999999999999999999999999999999999", "address": "NOXDXXKUDWLOFJLIPQIBRBMGDYCPGDNLQOLQS99EQYKBIU9VHCJVIPFUYCQDNY9APGEVYLCENJIOBLWNB", "value": "1" "message": "", "securityLevel": 1, "minWeightMagnitude": 13}'

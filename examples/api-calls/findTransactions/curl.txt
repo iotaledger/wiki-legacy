@@ -1,4 +1,0 @@
-curl http://localhost:14265 \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -d '{"command": "findTransactions", "addresses": ["RVORZ9SIIP9RCYMREUIXXVPQIPHVCNPQ9HZWYKFWYWZRE9JQKG9REPKIASHUUECPSQO9JT9XNMVKWYGVAZETAIRPTM"]}'
