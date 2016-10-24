@@ -171,3 +171,4 @@ sendTrytes(trytes [, callback])
 
 1. For `prepareTransfers`, should the user be able to define the remainder address?
 2. For `prepareTransfers`, should the user be able to define the inputs? (A problem is that the users of the libraries need to keep track of indexes of addresses.)
+3. For `getTransfers`, should we make it possible to define the indexes for addresses?
