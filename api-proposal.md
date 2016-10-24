@@ -66,7 +66,6 @@ prepareTransfers(seed, transfersArray [, options] [, callback])
 3. **`options`**: `Object` which is optional:
   - **`deterministic`**: `Bool` For choosing inputs, if true it chooses inputs deterministically. If false, it chooses the best input available. This will prevent double-spending inputs. **default: true**
   - **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
-  - **`encode`**: `Bool` if yes, it automatically encodes the `tag` and `message` value into trytes. This makes it possible to pass JSON objects and more through it.
 4. **`callback`**: `Function` Optional callback.
 
 #### Return Value
