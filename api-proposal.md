@@ -11,8 +11,25 @@ Purpose of this page is to both, propose a uniform API design which the librarie
 ## Table of Contents		
 
   - **[Core API](#core-api)**
-  - **[Crypto Functions](crypto-functions)**
   - **[Proposed API Calls](#proposed-api-calls)**
+    - **[prepareTransfers](#prepareTransfers)**
+    - **[getNewAddress](#getNewAddress)**
+    - **[getBundle](#getBundle)**
+    - **[getTransfers](#getTransfers)**
+    - **[replayTransfer](#replayTransfer)**
+    - **[sendTransfer](#sendTransfer)**
+    - **[sendTrytes](#sendTrytes)**
+  - **[Utils](utils)**
+    - **[getChecksum](#getChecksum)**
+    - **[noChecksum](#noChecksum)**
+    - **[validChecksum](#validChecksum)**
+    - **[convertUnits](#convertUnits)**
+    - **[transactionObject](#transactionObject)**
+    - **[transactionTrytes](#transactionTrytes)**
+    - **[readMessage](#readMessage)**
+    - **[toTrytes](#toTrytes)**
+    - **[toString](#toString)**
+    - **[validate](#validate)**
   - **[Questions](#questions)**
 
 ***
@@ -166,6 +183,167 @@ sendTrytes(trytes [, callback])
 
 
 ***
+
+## Utils
+
+These are proposed utility functions.
+
+### `getChecksum`
+
+Takes an 81-trytes address as input and calculates the 9-trytes checksum of the address.
+
+### Input
+```
+getChecksum(address)
+```
+
+1. **`address`** `String` 81-trytes address
+
+#### Returns
+`String` - returns 90-trytes address (81-trytes address + 9-trytes checksum)
+
+
+
+### `noChecksum`
+
+Removes the 9-trytes checksum of the address.
+
+### Input
+```
+noChecksum(address)
+```
+
+1. **`address`** `String` 90-trytes address
+
+#### Returns
+`String` - returns 81-trytes address
+
+
+
+### `validChecksum`
+
+Takes both, the 81-trytes address as well as the 90-trytes address with checksum as input and simply compares the two by calculate the checksum for the 81-tryte address.
+
+### Input
+```
+validChecksum(address, addressWithChecksum)
+```
+
+1. **`address`** `String` 81-trytes address
+2. **`addressWithChecksum`** `String` 90-trytes address
+
+#### Returns
+`Bool` - True/False if addressWithChecksum is valid or not.
+
+
+
+### `convertUnits`
+
+Converts a unit to another. Units are from the standard system of units (here is a unitMap: https://github.com/iotaledger/iota.lib.js/blob/master/lib/utils/utils.js#L9)
+
+### Input
+```
+convertUnits(value, fromUnit, toUnit)
+```
+
+1. **`value`** `Int` value to convert
+2. **`fromUnit`** `String` current unit of the value
+3. **`toUnit`** `String` unit to convert to
+
+#### Returns
+`Int` - returns the new converted value.
+
+
+### `transactionObject`
+
+Converts transaction trytes into a transaction object so that the values of the transaction can be easily read.
+
+### Input
+```
+transactionObject(trytes)
+```
+
+1. **`trytes`** `Array` - array of transaction trytes
+
+#### Returns
+`Array` - array of transaction objects
+
+
+### `transactionTrytes`
+
+Converts transaction objects into trytes.
+
+### Input
+```
+transactionTrytes(transactionObjects)
+```
+
+1. **`transactionObjects`** `Array` - array of transaction objects
+
+#### Returns
+`Array` - array of transaction trytes
+
+
+### `readMessage`
+
+Takes a transaction bundle as input and correctly reads the associated message that was sent. In some cases when the message exceeds the 2187-trytes limit per transaction, this function might be really useful in correctly outputting the full message value.
+
+### Input
+```
+readMessage(transactionBundle)
+```
+
+1. **`transactionBundle`** `Array` - array of transaction bundle
+
+#### Returns
+`String` - message which was sent with the transfer
+
+
+### `toTrytes`
+
+Converts a string into trytes according to a standardized conversion schema. Works for either ASCII and UTF-8.
+
+### Input
+```
+toTrytes(string, encoding)
+```
+
+1. **`string`** `String`
+2. **`encoding`** `String` - either ASCII or UTF-8
+
+#### Returns
+`String` - trytes
+
+
+### `toString`
+
+Converts a trytes into a string according to a standardized conversion schema. Works for either ASCII and UTF-8.
+
+### Input
+```
+toString(trytes, encoding)
+```
+
+1. **`trytes`** `String`
+2. **`encoding`** `String` - either ASCII or UTF-8
+
+#### Returns
+`String` - string
+
+
+### `validate`
+
+Validator object which contains functions for the validation of certain inputs.
+
+### Input
+
+
+#### Returns
+`Bool` - True/False
+***
+
+
+
 
 ## Questions
 
