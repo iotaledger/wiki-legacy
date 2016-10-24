@@ -13,7 +13,7 @@ Purpose of this page is to both, propose a uniform API design which the librarie
   - **[Core API](#core-api)**
   - **[Crypto Functions](crypto-functions)**
   - **[Proposed API Calls](#proposed-api-calls)**
-	- **[Questions](#questions)**
+  - **[Questions](#questions)**
 
 ***
 
@@ -48,7 +48,7 @@ prepareTransfers(seed, transfersArray [, options] [, callback])
   - **`tag`**: `String` 27-tryte encoded tag.
 3. **`options`**: `Object` which is optional:
   - **`deterministic`**: `Bool` For choosing inputs, if true it chooses inputs deterministically. If false, it chooses the best input available. This will prevent double-spending inputs. **default: true**
-	- **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
+  - **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
   - **`encode`**: `Bool` if yes, it automatically encodes the `tag` and `message` value into trytes. This makes it possible to pass JSON objects and more through it.
 4. **`callback`**: `Function` Optional callback.
 
@@ -68,7 +68,7 @@ getNewAddress(seed [, options] [, callback])
 1. **`seed`**: `String` tryte-encoded seed. It should be noted that this seed is not transferred
 2. **`options`**: `Object` which is optional:
   - **`index`**: `Int` If the index is provided, the generation of the address is not deterministic.
-	- **`checksum`**: `Bool` Adds 9-tryte address checksum
+  - **`checksum`**: `Bool` Adds 9-tryte address checksum
   - **`total`**: `Int` Total number of addresses to generate.
 3. **`callback`**: `Function` Optional callback.
 
@@ -141,7 +141,7 @@ sendTransfer(seed, transferObject [, options] [, callback])
   - **`tag`**: `String` 27-tryte encoded tag.
 3. **`options`**: `Object` which is optional:
   - **`deterministic`**: `Bool` For choosing inputs, if true it chooses inputs deterministically. If false, it chooses the best input available. This will prevent double-spending inputs. **default: true**
-	- **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
+  - **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
   - **`encode`**: `Bool` if yes, it automatically encodes the `tag` and `message` value into trytes. This makes it possible to pass JSON objects and more through it.
 4. **`callback`**: `Function` Optional callback.
 
