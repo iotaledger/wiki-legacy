@@ -187,13 +187,13 @@ sendTrytes(trytes [, callback])
 
 These are proposed utility functions.
 
-### `getChecksum`
+### `addChecksum`
 
 Takes an 81-trytes address as input and calculates the 9-trytes checksum of the address.
 
 ### Input
 ```
-getChecksum(address)
+addChecksum(address)
 ```
 
 1. **`address`** `String` 81-trytes address
@@ -203,13 +203,13 @@ getChecksum(address)
 
 
 
-### `noChecksum`
+### `removeChecksum`
 
 Removes the 9-trytes checksum of the address.
 
 ### Input
 ```
-noChecksum(address)
+removeChecksum(address)
 ```
 
 1. **`address`** `String` 90-trytes address
@@ -219,13 +219,13 @@ noChecksum(address)
 
 
 
-### `validChecksum`
+### `isValidChecksum`
 
 Takes both, the 81-trytes address as well as the 90-trytes address with checksum as input and simply compares the two by calculate the checksum for the 81-tryte address.
 
 ### Input
 ```
-validChecksum(address, addressWithChecksum)
+isValidChecksum(address, addressWithChecksum)
 ```
 
 1. **`address`** `String` 81-trytes address
