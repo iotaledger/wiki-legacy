@@ -221,19 +221,17 @@ removeChecksum(address)
 
 ### `isValidChecksum`
 
-Takes both, the 81-trytes address as well as the 90-trytes address with checksum as input and simply compares the two by calculate the checksum for the 81-tryte address.
+Takes 90-trytes address with checksum as input, generates the checksum and compares the result.
 
 ### Input
 ```
-isValidChecksum(address, addressWithChecksum)
+isValidChecksum(addressWithChecksum)
 ```
 
-1. **`address`** `String` 81-trytes address
-2. **`addressWithChecksum`** `String` 90-trytes address
+1. **`addressWithChecksum`** `String` 90-trytes address
 
 #### Returns
 `Bool` - True/False if addressWithChecksum is valid or not.
-
 
 
 ### `convertUnits`
