@@ -65,6 +65,7 @@ prepareTransfers(seed, transfersArray [, options] [, callback])
   - **`tag`**: `String` 27-tryte encoded tag.
 3. **`options`**: `Object` which is optional:
   - **`deterministic`**: `Bool` For choosing inputs, if true it chooses inputs deterministically. If false, it chooses the best input available. This will prevent double-spending inputs. **default: true**
+  - **`inputs`**: `Array` List of inputs used for funding the transfer
   - **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
 4. **`callback`**: `Function` Optional callback.
 
@@ -146,21 +147,21 @@ Wrapper function that basically does `prepareTransfers`, as well as `attachToTan
 
 ### Input
 ```
-sendTransfer(seed, transferObject [, options] [, callback])
+sendTransfer(seed, depth, minWeightMagnitude, transfers [, options] [, callback])
 ```
 
 1. **`seed`** `String` tryte-encoded seed. If provided, will be used for signing and picking inputs.
 2. **`depth`** `Int` depth
 3. **`minWeightMagnitude`** `Int` minWeightMagnitude
-4. **`transfersArray`**: `Array` of transfer objects:
+4. **`transfers`**: `Array` of transfer objects:
   - **`address`**: `String` 81-tryte encoded address of recipient
   - **`value`**: `Int` value to be transferred.
   - **`message`**: `String` tryte-encoded message to be included in the bundle.
   - **`tag`**: `String` 27-tryte encoded tag.
 5. **`options`**: `Object` which is optional:
   - **`deterministic`**: `Bool` For choosing inputs, if true it chooses inputs deterministically. If false, it chooses the best input available. This will prevent double-spending inputs. **default: true**
+  - **`inputs`**: `Array` List of inputs used for funding the transfer
   - **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
-  - **`encode`**: `Bool` if yes, it automatically encodes the `tag` and `message` value into trytes. This makes it possible to pass JSON objects and more through it.
 6. **`callback`**: `Function` Optional callback.
 
 
