@@ -12,6 +12,7 @@ Purpose of this page is to both, propose a uniform API design which the librarie
 
   - **[Core API](#core-api)**
   - **[Proposed API Calls](#proposed-api-calls)**
+    - **[getInputs](#getInputs)**
     - **[prepareTransfers](#prepareTransfers)**
     - **[getNewAddress](#getNewAddress)**
     - **[getBundle](#getBundle)**
@@ -46,6 +47,27 @@ To be added
 
 This is a list of new API calls which will help do just about anything possible with IOTA. These are mostly **wrapper functions**, this means that there will be more functions required in achieving the results. We leave it open for the developers of the libraries to develop this extra functionality (the result should be universally the same obviously).
 
+### `getInputs`
+
+Gets all possible inputs of a seed and returns them with the total balance. This is either done deterministically (by genearating all addresses until `findTransactions` is empty and doing getBalances), or by providing a key range to use for searching through.
+
+
+### Input
+```
+getInputs(seed, [, options] [, callback])
+```
+
+1. **`seed`**: `String` tryte-encoded seed. It should be noted that this seed is not transferred
+2. **`range`**: `Object` which is optional:
+  - **`start`**: `int` Starting key index  
+  - **`stop`**: `int` Ending key index
+4. **`callback`**: `Function` Optional callback.
+
+#### Return Value
+
+`Array` - an array of objects that contains a list of all inputs with the respective balance of the inputs
+
+
 ### `prepareTransfers`
 
 Main purpose of this function is to get an array of transfer objects as input, and then prepare the transfer by **generating the correct bundle**, as well as **choosing and signing the inputs** if necessary (if it's a value transfer). The output of this function is an array of the raw transaction data (trytes).
@@ -64,7 +86,6 @@ prepareTransfers(seed, transfersArray [, options] [, callback])
   - **`message`**: `String` tryte-encoded message to be included in the bundle.
   - **`tag`**: `String` 27-tryte encoded tag.
 3. **`options`**: `Object` which is optional:
-  - **`deterministic`**: `Bool` For choosing inputs, if true it chooses inputs deterministically. If false, it chooses the best input available. This will prevent double-spending inputs. **default: true**
   - **`inputs`**: `Array` List of inputs used for funding the transfer
   - **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
 4. **`callback`**: `Function` Optional callback.
