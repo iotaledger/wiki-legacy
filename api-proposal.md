@@ -58,9 +58,10 @@ getInputs(seed, [, options] [, callback])
 ```
 
 1. **`seed`**: `String` tryte-encoded seed. It should be noted that this seed is not transferred
-2. **`range`**: `Object` which is optional:
+2. **`options`**: `Object` which is optional:
   - **`start`**: `int` Starting key index  
   - **`stop`**: `int` Ending key index
+  - **`threshold`**: `int` Minimum threshold of accumulated balances from the inputs that is required
 4. **`callback`**: `Function` Optional callback.
 
 #### Return Value
@@ -108,6 +109,7 @@ getNewAddress(seed [, options] [, callback])
   - **`index`**: `Int` If the index is provided, the generation of the address is not deterministic.
   - **`checksum`**: `Bool` Adds 9-tryte address checksum
   - **`total`**: `Int` Total number of addresses to generate.
+  - **`returnAll`**: `Bool` If true, it returns all addresses which were deterministically generated (until findTransactions returns null)
 3. **`callback`**: `Function` Optional callback.
 
 #### Returns
@@ -180,7 +182,6 @@ sendTransfer(seed, depth, minWeightMagnitude, transfers [, options] [, callback]
   - **`message`**: `String` tryte-encoded message to be included in the bundle.
   - **`tag`**: `String` 27-tryte encoded tag.
 5. **`options`**: `Object` which is optional:
-  - **`deterministic`**: `Bool` For choosing inputs, if true it chooses inputs deterministically. If false, it chooses the best input available. This will prevent double-spending inputs. **default: true**
   - **`inputs`**: `Array` List of inputs used for funding the transfer
   - **`address`**: `String` if defined, this address will be used for sending the remainder value (of the inputs) to.
 6. **`callback`**: `Function` Optional callback.
