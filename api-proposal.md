@@ -67,8 +67,8 @@ getInputs(seed, [, options] [, callback])
 #### Return Value
 
 1. **`Object`** - an object with the following keys:
-    - **`inputs`** `Array` - list of inputs objects consisting of `address` and `balance`
-    - **`totalBalance`** `int` - aggregated balance of all inputs 
+    - **`inputs`** `Array` - list of inputs objects consisting of `address`, `balance` and `keyIndex`
+    - **`totalBalance`** `int` - aggregated balance of all inputs
 
 
 ### `prepareTransfers`
