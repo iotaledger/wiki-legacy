@@ -60,13 +60,15 @@ getInputs(seed, [, options] [, callback])
 1. **`seed`**: `String` tryte-encoded seed. It should be noted that this seed is not transferred
 2. **`options`**: `Object` which is optional:
   - **`start`**: `int` Starting key index  
-  - **`stop`**: `int` Ending key index
+  - **`end`**: `int` Ending key index
   - **`threshold`**: `int` Minimum threshold of accumulated balances from the inputs that is required
 4. **`callback`**: `Function` Optional callback.
 
 #### Return Value
 
-`Array` - an array of objects that contains a list of all inputs with the respective balance of the inputs
+1. **`Object`** - an object with the following keys:
+    - **`inputs`** `Array` - list of inputs objects consisting of `address` and `balance`
+    - **`totalBalance`** `int` - aggregated balance of all inputs 
 
 
 ### `prepareTransfers`
