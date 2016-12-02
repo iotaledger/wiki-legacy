@@ -119,14 +119,14 @@ getNewAddress(seed [, options] [, callback])
 
 ### `getBundle`
 
-This function returns the bundle which is associated with a transaction. Input can by any type of transaction (tail and non-tail). If there are conflicting bundles (because of a replay for example) it will return multiple bundles. It also does important validation checking (signatures, sum, order) to ensure that the correct bundle is returned.
+This function returns the bundle which is associated with a transaction. Input can by any type of transaction (tail and non-tail). If there are multiple bundles (because of a replay for example), it will return multiple bundles. It also does important validation checking (signatures, sum, order) to ensure that the correct bundle is returned.
 
 ### Input
 ```
 getBundle(transaction [, callback])
 ```
 
-1. **`transaction`**: `String` Transaction hash, can be tail or non-tail. Tail search is more specific and leads to more detailed results.
+1. **`transaction`**: `String` Transaction hash, can be tail or non-tail. Tail search is more specific and leads to more exact results.
 2. **`callback`**: `Function` Optional callback
 
 #### Returns
