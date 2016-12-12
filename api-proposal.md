@@ -17,7 +17,7 @@ Purpose of this page is to both, propose a uniform API design which the librarie
     - **[getNewAddress](#getNewAddress)**
     - **[getBundle](#getBundle)**
     - **[getTransfers](#getTransfers)**
-    - **[replayTransfer](#replayTransfer)**
+    - **[replayBundle](#replayBundle)**
     - **[sendTransfer](#sendTransfer)**
     - **[sendTrytes](#sendTrytes)**
   - **[Utils](utils)**
@@ -151,17 +151,19 @@ getTransfers(seed [, options] [, callback])
 `Array` - returns an array of transfers. Each array is a bundle for the entire transfer.
 
 
-### `replayTransfer`
+### `replayBundle`
 
 Takes a tail transaction hash as input, gets the bundle associated with the transaction and then replays the bundle by attaching it to the tangle.
 
 ### Input
 ```
-replayTransfer(transaction [, callback])
+replayBundle(tail, depth, minWeightMagnitude, [, callback])
 ```
 
-1. **`transaction`**: `String` Transaction hash, has to be tail.
-2. **`callback`**: `Function` Optional callback
+1. **`tail`**: `String` Transaction hash, has to be tail.
+2. **`depth`**: `int` Depth at which to attach the bundle.
+3. **`minWeightMagnitude`**: `int` Min weight magnitude, used by the node to calibrate Proof of Work.
+4. **`callback`**: `Function` Optional callback
 
 #### Returns
 `Array` - returns an array containing the replayed transactions (bundle).
@@ -176,8 +178,8 @@ sendTransfer(seed, depth, minWeightMagnitude, transfers [, options] [, callback]
 ```
 
 1. **`seed`** `String` tryte-encoded seed. If provided, will be used for signing and picking inputs.
-2. **`depth`** `Int` depth
-3. **`minWeightMagnitude`** `Int` minWeightMagnitude
+2. **`depth`** `Int` Depth at which to attach the bundle.
+3. **`minWeightMagnitude`**: `int` Min weight magnitude, used by the node to calibrate Proof of Work.
 4. **`transfers`**: `Array` of transfer objects:
   - **`address`**: `String` 81-tryte encoded address of recipient
   - **`value`**: `Int` value to be transferred.
