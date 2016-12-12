@@ -14,7 +14,7 @@ Purpose of this page is to both, propose a uniform API design which the librarie
   - **[Proposed API Calls](#proposed-api-calls)**
     - **[getInputs](#getInputs)**
     - **[prepareTransfers](#prepareTransfers)**
-    - **[getNewAddress](#getNewAddress)**
+    - **[getNewAddresses](#getNewAddresses)**
     - **[getBundle](#getBundle)**
     - **[getTransfers](#getTransfers)**
     - **[replayTransfer](#replayTransfer)**
@@ -97,25 +97,24 @@ prepareTransfers(seed, transfersArray [, options] [, callback])
 
 `Array` - an array that contains the trytes of the new bundle.
 
-### `getNewAddress`
+### `getNewAddresses`
 
-Generates a new address from a seed and returns the address. This is either done deterministically, or by providing the index of the new address (see Questions for more information about this).
+Generates one or more new addresses from a seed and returns them. This is either done deterministically, or by providing the index of the new address (see Questions for more information about this).
 
 ### Input
 ```
-getNewAddress(seed [, options] [, callback])
+getNewAddresses(seed [, options] [, callback])
 ```
 
 1. **`seed`**: `String` tryte-encoded seed. It should be noted that this seed is not transferred
 2. **`options`**: `Object` which is optional:
   - **`index`**: `Int` If the index is provided, the generation of the address is not deterministic.
   - **`checksum`**: `Bool` Adds 9-tryte address checksum
-  - **`total`**: `Int` Total number of addresses to generate.
-  - **`returnAll`**: `Bool` If true, it returns all addresses which were deterministically generated (until findTransactions returns null)
+  - **`total`**: `Int` Total number of addresses to generate.  If null, the function will return all addresses which were deterministically generated (until findTransactions returns null)
 3. **`callback`**: `Function` Optional callback.
 
 #### Returns
-`String | Array` - returns either a string, or an array of strings.
+`Array<String>` - always returns an array of strings, even if only one address was generated.
 
 ### `getBundle`
 
