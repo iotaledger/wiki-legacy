@@ -60,10 +60,6 @@ Index | Purpose | Balance
 
 The collective of these signatures (Alice's, Bob's and Carol's signature), create the full multi-signature that is necessary for spending the input. 
 
-#### Validation of Signatures 
-
-Too lazy to write, will add later 
-
 ### How M-of-N works 
 
 One of the key differences between IOTA multi-signatures is that M-of-N (e.g. 3 of 5) works differently. What this means is that in order to successfully spend inputs, **all of the co-signers have to sign the transaction**. As such, in order to enable M-of-N we have to make use of a simple trick: sharing of private keys. 
