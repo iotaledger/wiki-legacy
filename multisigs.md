@@ -8,9 +8,10 @@ This document is intended to provide a high-level overview of multi-signatures i
 
 - **[What are Multi-Sigs?](#what-are-multi-sigs)**
 - **[Multi-Sigs in IOTA](#multi-sigs-in-iota)**
-    - **[How to use Multi-Sigs](#how-to-use-multi-sigs)**
-- **[Rules to Follow](#)**
-- **[How Multi-sigs work]()**
+    - **[Generating an Address](#generating-an-address)**
+    - **[Spending Inputs](#spending-inputs)**
+    - **[How M-of-N works](#how-m-of-n-works)**
+- **[Rules to Follow](#rules-to-follow)**
 
 ---
 
