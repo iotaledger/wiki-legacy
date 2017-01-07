@@ -39,7 +39,7 @@ In order to ensure that the multi-signature address was correctly constructed, a
 
 ### Spending inputs 
 
-Spending of inputs includes the signing of the transfers bundle with the private keys of each co-signer. The signing has to be done in the exact same order as was followed when generating the multi-signature address. Each co-signer has 2 bundle entries reserved for their signature, assuming 54 trit security was used, as is the current standard. 
+Spending of inputs includes the signing of the transfers bundle with the private keys of each co-signer. The signing has to be done in the exact same order as was followed when generating the multi-signature address. Each co-signer has 2 bundle entries reserved for their signature, assuming 162 trit (~256 bit) security was used, as is the current standard. 
 
 When spending inputs, it's important to keep in mind what happens with the remainder. As is currently the case, if there is a remainder, the co-signers need to define a new multi-signature address to which the remainder balance gets sent to. This means that this new multi-signature address needs to be generated before making a transaction.
 
@@ -90,7 +90,7 @@ When creating a multi-signature address and when signing a transaction for that 
 
 ### :bangbang: Never re-use keys
 
-Probably the most important rule to keep in mind: absolutely never re-use private keys. IOTA uses one-time Winternitz signatures, which means that if you re-use private keys you significantly decrease the security of your private keys, up to a point where they can be easily reconstructed / bruteforced. Therefore, when generating a new multi-signature with your co-signers, always increase the private key **index counter** and only use a single private key once. Don't use it for any other multi-signatures and don't use it for any personal transactions. 
+Probably the most important rule to keep in mind: absolutely never re-use private keys. IOTA uses one-time Winternitz signatures, which means that if you re-use private keys you significantly decrease the security of your private keys, up to the point where signing of another transaction can be done on a conventional computer within few days. Therefore, when generating a new multi-signature with your co-signers, always increase the private key **index counter** and only use a single private key once. Don't use it for any other multi-signatures and don't use it for any personal transactions. 
 
 ### :bangbang: Never share your private keys 
 
