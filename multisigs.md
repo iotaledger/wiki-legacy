@@ -25,7 +25,7 @@ There are various ways to use multi-signatures: You can have N-of-N schemes (mea
 
 ## Multi-Sigs in IOTA 
 
-IOTA uses Curl, which is our internal hashing function. Because of this, multi-signatures in IOTA or slightly different from the ones compared to Bitcoin or other Blockchains using ECC. Many of the key principles remain. We will provide concrete information where there are significant differences from existing multi-signature schemes.
+IOTA uses Curl, which is a trinary cryptographic hash function. Coming from other Blockchain projects, IOTA has similar principles and advantages / disadvantages when it comes to multi-signatures. Multi-signatures and their validation are supported by the core clients by default. To actually utilize multi-signatures, you need to use the provided client-side libraries.
 
 At the time of writing (first week of January 2017), the [Javascript library](https://github.com/iotaledger/iota.lib.js) has implemented and made available multi-signature. Please go to the official documentation to find out how to use them in your environment. 
 
