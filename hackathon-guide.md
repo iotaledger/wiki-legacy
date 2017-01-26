@@ -12,16 +12,11 @@ This guide is aimed at helping hackathon participants who want to use IOTA, but 
 - **[Transactions and Bundles](#transactions-and-bundles)**
 - **[The IOTA Sandbox](#the-iota-sandbox)**
 - **[Libraries to use](#libraries-to-use)**
-- How to get tokens
-- Mainnet vs. Testnet
-
-- What is a Bundle
--
-    - trytes to transaction
-    - Sending DATA
-    - Generating an Address
-    - Making a transfer
-    - Find Transactions
+- **[Workflow](#workflow)**
+    - **[Important API Calls](#important-api-calls)**
+    - **[Generating an Address](#generating-an-address)**
+    - **[Making a transfer](#make-a-transfer)**
+    - **[Sending data](#sending-data)**
 
 
 ---
@@ -99,7 +94,7 @@ Index | Purpose | Balance
 
 ## The IOTA Sandbox
 
-To make your life at this hackathon easy and you can focus on what matters (building your application), we have made available a Sandbox environment, which basically takes care of all the heavy-lifting for you. As such, you can use IOTA by simply making an HTTP(s) call to our sandbox, and that's it.
+To make your life at this hackathon easy and you can focus on what matters (building your application), we have made available a Sandbox environment, which basically takes care of all the heavy-lifting for you. As such, you can use IOTA by simply making an HTTP(s) call to our sandbox, and that's it. **Obviously, you shouldn't stresstest the Sandbox and spam it with requests...**
 
 For more documentation on the Sandbox, please head over to: [http://dev.iotatoken.com/sandbox/](http://dev.iotatoken.com/sandbox/)
 
@@ -114,6 +109,7 @@ var iota = new IOTA({
 });
 ```
 
+---
 
 ## Libraries to Use
 
@@ -124,3 +120,42 @@ Language | Link | Maturity
 Javascript | [https://github.com/iotaledger/iota.lib.js](https://github.com/iotaledger/iota.lib.js) | High
 Python | [https://github.com/iotaledger/iota.lib.py](https://github.com/iotaledger/iota.lib.py) | Good
 Java | [https://github.com/pinpong/iota.lib.java/](https://github.com/pinpong/iota.lib.java/) | Good
+
+---
+
+## Workflow Examples
+
+### Important API Calls
+
+Here is a list of API calls which you will most likely only need for your hackathon (these are function names from the Javascript library, so they may be different in the other libraries ):
+
+Function | Purpose
+--- | ---
+`api.findTransactions` | Find the transaction hashes of transactions that match a certain criteria (e.g. address, bundle hash)
+`api.getTrytes` | Get the trytes from a transaction hash
+`api.getBalances` | Get the confirmed balance of an address
+`api.getLatestInclusion` | Get the transaction confirmation status of a transaction  
+`api.findTransactionObjects` | Wrapper of findTransactions and transactionObject
+`api.getNewAddress` | Generate a new address from a seed
+`api.sendTransfer` | Send a transaction
+`api.getTransfers` | Get a list of transactions associated with a seed (account)
+`utils.transactionObject` | Turn trytes into transaction object
+`utils.transactionTrytes` | Turn transaction object into trytes
+
+---
+
+### Important API Calls
+
+Soon
+
+### Generating an Address
+
+Soon
+
+### Making a Transfer
+
+Soon
+
+### Sending data
+
+When sending data via IOTA, you currently only have two options: as part of the `message` field, where you have unlimited space but have no search functionality, or as part of the `tag` field, where you only have 27 trytes of space.
