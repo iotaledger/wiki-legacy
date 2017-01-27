@@ -144,13 +144,29 @@ Function | Purpose
 
 ---
 
-### Important API Calls
-
-Soon
-
 ### Generating an Address
 
-Soon
+Generating an address requires you to simply have a seed. With the `getNewAddress` function you are able to deterministically generate new addresses. In case you want to go more low level, you can define the key `index` yourself in order to generate a seed at a certain private key index (starting from 0). You can also add the `checksum` to your address or even generate a set of addresses by defining `index` and `total`.
+
+```
+// Generate a single address deterministically with seed 'ABCDFG'
+iota.api.getNewAddress('ABCDFG', function(e, address) {
+    console.log(address) // 'UMCIPFQZECSQFGAPTJXBMESJDXRQLETKHIVQKUNTLKPFCDABIIAAFMRCA9NGMKPNYPJXILNEXSSLOWNJC'
+})
+
+
+// Generate 5 addresses starting from index 0
+iota.api.getNewAddress('ABCDFG', {'index':0, 'total': 5}, function(e, addresses) {
+    console.log(addresses) 
+
+    // Result:
+    ["UMCIPFQZECSQFGAPTJXBMESJDXRQLETKHIVQKUNTLKPFCDABIIAAFMRCA9NGMKPNYPJXILNEXSSLOWNJC",
+    "GWXMZADCDEWEAVRKTAIWOGE9RDX9QPKJHPPQ9IDDOINY9TUWJGKCWF9GSOW9QBPNRVSVFLBMLPAHWDNSB",
+    "9TZEPOCR9QJCAXUWMBMSXVQIZDTZDCRIPXIQMGXN9JTJAIYDEDPISXKNFESWX9WTUYNAKHRLX9KBSQYTG",
+    "9YUGWDGAGF9KFCFHMSYLLGQQFPBSYJPLHFXYFCJUHKFARJBKSIIUEPBEBBEBBDJRKI9OIAKXBWJNL9AKY",
+    "LMEKJPPV9PFCVGHIPCIVUGNBEBPKRAZLKPCGYUXWB9FUVSJIHYJYGGLUCKXCOTXMEGMWBVWPWQZLDQLNV"]
+})
+```
 
 ### Making a Transfer
 
