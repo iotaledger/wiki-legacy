@@ -12,6 +12,7 @@ This guide is aimed at helping hackathon participants who want to use IOTA, but 
 - **[Transactions and Bundles](#transactions-and-bundles)**
 - **[The IOTA Sandbox](#the-iota-sandbox)**
 - **[Libraries to use](#libraries-to-use)**
+- **[Using Nostalgia](#using-nostalgia)**
 - **[Workflow](#workflow)**
     - **[Important API Calls](#important-api-calls)**
     - **[Generating an Address](#generating-an-address)**
@@ -24,6 +25,8 @@ This guide is aimed at helping hackathon participants who want to use IOTA, but 
 ## What is IOTA
 
 IOTA is a permissionless and public distributed ledger based on the Tangle, which is a Directed Acyclic Graph. IOTA has a very unique approach to consensus: instead of requiring miners to do the consensus, network participants making transactions actively participate in the consensus by **validating two past transactions** (and doing some Proof of work). Because of this, IOTA has **no transaction fees** (we also have some other advantages like quantum-security, partition-tolerance and scalability, but that doesn't matter to your right now). Obviously IOTA also has an internal token called IOTA.
+
+For more documentation head to: [https://iota.readme.io/docs/findtransactions](https://iota.readme.io/docs/findtransactions)
 
 ---
 
@@ -123,6 +126,16 @@ Java | [https://github.com/pinpong/iota.lib.java/](https://github.com/pinpong/io
 
 ---
 
+## Using Nostalgia
+
+We have provided a special nostalgia version for you with additional logging that is already enabled for the sandbox. Feel free to use Nostalgia in order to check the balance of a seed, make a transaction or execute API calls in the Browser console.
+
+You can download the special nostalgia version from here: [https://github.com/domschiener/nostalgia/releases/tag/sandbox](https://github.com/domschiener/nostalgia/releases/tag/sandbox)
+
+![alt text](./images/nostalgia.png)
+
+---
+
 ## Workflow Examples
 
 ### Important API Calls
@@ -157,7 +170,7 @@ iota.api.getNewAddress('ABCDFG', function(e, address) {
 
 // Generate 5 addresses starting from index 0
 iota.api.getNewAddress('ABCDFG', {'index':0, 'total': 5}, function(e, addresses) {
-    console.log(addresses) 
+    console.log(addresses)
 
     // Result:
     ["UMCIPFQZECSQFGAPTJXBMESJDXRQLETKHIVQKUNTLKPFCDABIIAAFMRCA9NGMKPNYPJXILNEXSSLOWNJC",
@@ -168,9 +181,67 @@ iota.api.getNewAddress('ABCDFG', {'index':0, 'total': 5}, function(e, addresses)
 })
 ```
 
+getAccountData and getTransfers only gets addresses that are generated **deterministically** with the seed. (unless you provide key index `start` and `end`, as per the API docs). Generating an address in IOTA also involves actually sending a transaction with the address in order to attach it to the tangle. Once an address has been attached to the tangle (and findTransactions on that address does not return null), the key index used to generate private keys from a seed is increased to generate a new address, and get all associated transactions with the previous one. Pretty simple concept.
+
+Therefore, in order to continue to generate addresses, you actually have to *attach them to the tangle*. What this means is that you have to use the `sendTransfer` function after generating an address, send a message (0 value transfer) and wait for the transaction to be successfully attached. See *Making a Transfer* section for more information. Here is an example:
+
+```
+// Generate a single address deterministically with seed 'ABCDFG'
+iota.api.getNewAddress('ABCDFG', function(e, address) {
+
+    console.log(address) // 'UMCIPFQZECSQFGAPTJXBMESJDXRQLETKHIVQKUNTLKPFCDABIIAAFMRCA9NGMKPNYPJXILNEXSSLOWNJC'
+
+    var transfer = [{
+        'address': address,
+        'value': 0
+    }]
+
+    iota.api.sendTransfer('SEED', 9, 18, transfer, function(e,s) {
+
+        if (!e) {
+            console.log("Successfully generated and attached address");
+        }
+    })
+})
+
+```
+
 ### Making a Transfer
 
-Soon
+Making a transfer through the Sandbox and the library is fairly simple. Usually when talking about transfers, there are two types:
+
+- **Value Transfers**: Transfers which send tokens from one address to another and require signatures
+- **Message transfers**: Transfers which don't require a signature and have no value transfer
+
+In order to make a value transfer, you obviously need to have a *seed* which has tokens associated with it. Use Nostalgia as a sure-way to know whether a seed has tokens or not.
+
+Every transfer requires a transfers object (or lets say, an array of objects). With this you can also make multiple transfers and bundle them together in a single transfer. You do not have to define `message` and `tag`.
+
+```
+var transfers = [{
+    'address': '' // Recipient address
+    'value': 0 // value to be transferred
+    'message': '' // message to be stored in the signatureMessageFragment of transaction
+    'tag': '' // unique tag that can be used to tag all transactions in a bundle
+}]
+```
+
+When it comes to `depth` and `minWeightMagnitude`, we advise you to use `3` as a standard value for `depth`, and `18` as a standard value for `minWeightMagnitude`.
+
+```
+//
+var transfer = [{
+    'address': 'UMCIPFQZECSQFGAPTJXBMESJDXRQLETKHIVQKUNTLKPFCDABIIAAFMRCA9NGMKPNYPJXILNEXSSLOWNJC',
+    'value': 0
+}]
+
+iota.api.sendTransfer('SEED', 9, 18, transfer, function(e,s) {
+
+    if (!e) {
+        console.log("Successfully made a transfer ");
+    }
+})
+```
 
 ### Sending data
 
