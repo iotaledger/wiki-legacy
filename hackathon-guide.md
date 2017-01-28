@@ -154,6 +154,8 @@ Function | Purpose
 `api.getTransfers` | Get a list of transactions associated with a seed (account)
 `utils.transactionObject` | Turn trytes into transaction object
 `utils.transactionTrytes` | Turn transaction object into trytes
+`utils.toTrytes` | Convert a string into trytes
+`utils.fromTrytes` | Convert trytes into a string
 
 ---
 
@@ -246,3 +248,5 @@ iota.api.sendTransfer('SEED', 9, 18, transfer, function(e,s) {
 ### Sending data
 
 When sending data via IOTA, you currently only have two options: as part of the `message` field, where you have unlimited space but have no search functionality, or as part of the `tag` field, where you only have 27 trytes of space.
+
+In order to convert data (e.g. a JSON object) into trytes and vice versa, you can simply use the `utils.toTrytes`, and then the `utils.fromTrytes` functions. It should be noted that these functions currently **only work with ASCII**. If you want to read data from the signatureFragment then (i.e. data sent via the `message` field), all you have to do is remove the extra 9's that were padded when making a transaction. 
