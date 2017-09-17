@@ -78,6 +78,8 @@ Carol   ->      Alice
 
 > Now, each participant holds two private keys that he/she can use to collude with another party to successfully sign the inputs and make a transaction. But no single party holds enough keys (3 of 3) to be able to independently make the transaction. 
 
+In the general case, for M-of-N signatures, you need ![N choose M-1](http://mathurl.com/y8jmcqdb.png) keys, so that each key is shared between different N-M+1 people. Each key is unknown to M-1 people, so at most M-1 people colluding will at least miss one key, and M people will have a copy of each key.
+
 --- 
 
 ## Rules to Follow 
