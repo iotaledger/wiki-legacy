@@ -99,7 +99,7 @@ Index | Purpose | Balance
 
 To make your life at this hackathon easy and you can focus on what matters (building your application), we have made available a Sandbox environment, which basically takes care of all the heavy-lifting for you. As such, you can use IOTA by simply making an HTTP(s) call to our sandbox, and that's it. **Obviously, you shouldn't stresstest the Sandbox and spam it with requests...**
 
-For more documentation on the Sandbox, please head over to: [http://dev.iotatoken.com/sandbox/](http://dev.iotatoken.com/sandbox/)
+For more documentation on the Sandbox, please head over to: [dev.iota.org/sandbox/](dev.iota.org/sandbox/)
 
 All you really have to do is get an API key and use the Sandbox as the API provider. Here is an example on how to use the Sandbox with the Javascript library:
 
