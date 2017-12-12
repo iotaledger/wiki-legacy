@@ -1,4 +1,4 @@
-![IOTA Logo](https://raw.githubusercontent.com/iotaledger/documentation/master/logo/iota-logo.png)
+![IOTA Logo](https://raw.githubusercontent.com/iotaledger/wiki/master/logo/iota-logo.png)
 
 # What is IOTA?
 
