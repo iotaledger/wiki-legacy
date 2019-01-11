@@ -95,3 +95,18 @@ Probably the most important rule to keep in mind: absolutely never re-use privat
 ### :bangbang: Never share your private keys 
 
 Under no circumstances - other than wanting to reduce the requirements for a multi-signature (see section **How M-of-N works**) - should you share your private keys. Sharing your private keys with others means that they can sign your part of the multi-signature successfully. 
+
+### :bangbang: Do not sign blindly
+
+[Digital signatures can be susceptible to a birthday attack](http://archive.fo/lRBD3). In order to reduce the security assumptions of the underlying cryptographic primitive, multi-signature implementations should never blindly sign a bundle given to them without first modifying it. Since assumptions of one-wayness are less than that of preimage, second-preimage, and collision resistance, implementations of the multi-signature scheme in practice would be wise to employ measures to reduce assumptions to one-wayness.
+
+One way of accomplishing this is to follow a commitment scheme. For example,
+
+0. At the same time that a multi-signature address is created, let each participant also share a public key for the commitment scheme.
+1. Let someone propose a bundle to sign to an un-trusted group.
+2. Now, let each participant in the group have liberty to randomly modify the 81-trit bundle tag (bundle nonce) of each transaction which they will sign.
+3. Before revealing it to the other participants, let them submit a signed hash of this random nonce to the group using their commitment signing key (in addition to another public key for the next signature if this round fails).
+4. Once everyone has collected the commitments of the other signatories in the group, let them reveal their nonces to each other.
+5. Each signatory in the group should check the received nonces against the commitment of every participant.
+6. If any nonce does not match, go back to (2), using the new commitment's public key.
+7. Once all nonces have been collected each signatory may independently insert them into the bundle to create the finalized bundle. They may now compute the final bundle hash and sign the bundle.
